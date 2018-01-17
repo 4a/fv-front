@@ -50,7 +50,7 @@ const Stream = function(parent) {
 		this.el = el;
 	}
 
-	this.remove = function() {
+	this.destroy = function() {
 		this.el.remove();
 		this.el = null;
 	}
@@ -61,14 +61,48 @@ const Stream = function(parent) {
 	}
 }
 
-const Icon = function(state, image) {
+const Icon = function(parent, obj) {
+/*
+icon object:
+{
+	"name": "",
+	"alt": "",
+	"icon": "",
+	"chan": "",
+	"site": "",
+	"category": "",
+	"visible": num,
+	"priority": num,
+	"live": num,
+	"updated": date
+}
+*/
+	parent = $(parent);
 	const self = this;
+	this.el = null;
+
+	const imgHtml = `<img src='${obj.icon}'>`;
+
+	this.create = function() {
+		const el = $('<div>').addClass('icon');
+		el.append(imgHtml);
+		parent.append(el);
+		this.el = el;
+	}
+
+	this.destroy = function() {
+
+	}
 
 	this.click = function() {
 		
 	}
 
 	this.hover = function() {
+
+	}
+
+	this.update = function() {
 
 	}
 }
