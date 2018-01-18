@@ -8,8 +8,9 @@
 		
 		// example
 		function pageLoad() {
-			const test = new Stream('#streams');
-			test.embed('ttv', 'test');
+			const test = new StreamArea('#streams');
+			const a = new Stream('ttv', 'test');
+			test.addStream(a);
 		}
 
 		$(document).ready(pageLoad);

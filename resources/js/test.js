@@ -41,33 +41,58 @@ const embed = {
 	}
 }
 
-class Stream {
-	constructor (parent) 
-	{
-		this.parent = $(parent);
-		this.selected = 0;
-		this.el = null;
-	}
-	
-	create () 
-	{
-		const el = $('<div>').addClass('streamwrap');
-		this.parent.append(el);
-		this.el = el;
-	}
-
-	destroy () 
-	{
-		this.el.remove();
-		this.el = null;
-	}
-
-	embed (state, channel) 
-	{
-		if (!this.el) this.create(); 
-		this.el.html( embed[state].getStream(channel) );
+class PageElement {
+	constructor (selector) {
+		this.element = $(selector);
 	}
 }
+
+class StreamArea extends PageElement {
+	constructor (selector) {
+		super(selector)
+	}
+	addStream (obj) {
+		if (!obj.el) this.element.append( obj.create() );
+	}
+}
+
+class Stream {
+	constructor (site, channel) {
+		this.site = site;
+		this.channel = channel;
+		this.el = null;
+		this.selected = 0;
+		this.ratio = {
+			"A": 16,
+			"B": 9
+		}
+		this.ratioLocked = 1;
+	}
+	create () {
+		const div = $('<div>').addClass('streamwrap');
+		const iframe = embed[this.site].getStream(this.channel);
+		this.el = div.html(iframe);
+		return this.el;
+	}
+	destroy () {
+		if (this.el) this.el.remove();
+		this.el = null;
+	}
+}
+
+class IconArea extends PageElement {
+	constructor (selector) {
+		super(selector);
+		this.updateRate = 120000;
+	}
+	populate () {
+
+	}
+	update () {
+
+	}
+}
+
 /*
 icon object:
 {
@@ -90,32 +115,22 @@ class Icon
 		this.el = null;
 		this.imgHtml = `<img src='${obj.icon}'>`;
 	}
-
-	create () 
-	{
+	create () {
 		const el = $('<div>').addClass('icon');
 		el.append(imgHtml);
 		parent.append(el);
 		this.el = el;
 	}
-
-	destroy () 
-	{
+	destroy () {
 
 	}
-
-	click () 
-	{
+	click () {
 		
 	}
-
-	hover () 
-	{
+	hover () {
 
 	}
-
-	update () 
-	{
+	update () {
 
 	}
 }
