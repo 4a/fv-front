@@ -28,6 +28,11 @@
 			width: 1280px;
 			height: 100px;
 		}
+
+		.icon img {
+			height: 50px;
+			width: 50px;
+		}
 	</style>
 </head>
 <body>
@@ -39,10 +44,22 @@
 		<h3>icons</h3>
 	</div>
 		<script type="text/javascript">
-		// example
+		// stream example
 		const test = new StreamArea('#streams');
 		const a = new Stream('ttv', 'test');
 		test.addStream(a);
+
+		// icon example
+		const testIcon = {
+			"name": "Test Icon",
+			"icon": "https://static-cdn.jtvnw.net/user-default-pictures/49988c7b-57bc-4dee-bd4f-6df4ad215d3a-profile_image-300x300.jpg",
+			"site": "ttv",
+			"channel": "test"
+		};
+
+		const test2 = new IconArea('#icons');
+		const i = new Icon(testIcon);
+		test2.addIcon(i);
 	</script>
 </body>
 </html>

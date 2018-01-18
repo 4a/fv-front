@@ -44,6 +44,13 @@ const embed = {
 class PageElement {
 	constructor (selector) {
 		this.element = $(selector);
+		this.position = null;
+	}
+	move () {
+
+	}
+	resize () {
+
 	}
 }
 
@@ -53,23 +60,16 @@ class StreamArea extends PageElement {
 		this.streams = [];
 	}
 	addStream (stream) {
-		if (this.findStream(stream) < 0) {
-			stream.create();
-			this.element.append( stream.el );
-			this.streams.push( stream );
-		} else {
-			this.removeStream(stream);
-			stream.create();
-			this.element.append( stream.el );
-			this.streams.push( stream );
-		}
-		// if (!stream.el) this.element.append( stream.create() );
+		if (this.findStream(stream) > -1) this.removeStream(stream);
+		stream.create();
+		this.element.append( stream.jqEl );
+		this.streams.push( stream );
 	}
 	findStream (stream) {
 		return this.streams.indexOf(stream)
 	}
 	removeStream (stream) {
-		stream.el.remove();
+		stream.jqEl.remove();
 		this.streams.splice(this.findStream(stream), 1);
 	}
 }
@@ -78,7 +78,7 @@ class Stream {
 	constructor (site, channel) {
 		this.site = site;
 		this.channel = channel;
-		this.el = null;
+		this.jqEl = null;
 		this.selected = 0;
 		this.ratio = {
 			"A": 16,
@@ -87,65 +87,52 @@ class Stream {
 		this.ratioLocked = 1;
 	}
 	create () {
-		console.log(this.channel);
 		const div = $('<div>').addClass('streamwrap');
 		const iframe = embed[this.site].getStream(this.channel);
-		this.el = div.html(iframe);
+		this.jqEl = div.html(iframe);
 	}
 	destroy () {
 		if (this.el) this.el.remove();
-		this.el = null;
+		this.jqEl = null;
 	}
 }
 
 class IconArea extends PageElement {
-	constructor (selector) {
+	constructor (selector, icons) {
 		super(selector);
+		this.icons = icons || [];
 		this.updateRate = 120000;
 	}
-	populate () {
+	init () {
 
 	}
 	update () {
 
 	}
-}
-
-/*
-icon object:
-{
-	"name": "",
-	"alt": "",
-	"icon": "",
-	"chan": "",
-	"site": "",
-	"category": "",
-	"visible": num,
-	"priority": num,
-	"live": num,
-	"updated": date
-}
-*/
-
-const icons = [
-	{
-		"name": "Test Icon",
-		"icon": "https://static-cdn.jtvnw.net/user-default-pictures/49988c7b-57bc-4dee-bd4f-6df4ad215d3a-profile_image-300x300.jpg",
-		"site": "ttv",
-		"channel": "test"
+	addIcon (icon) {
+		if (this.findIcon(icon) > -1) this.removeStream(icon);
+		icon.create();
+		this.element.append( icon.jqEl );
+		this.streams.push( icon );
 	}
-]
+	findIcon (icon) {
+		return this.icons.indexOf(icon)
+	}
+	removeIcon (icon) {
+		icon.jqEl.remove();
+		this.streams.splice(this.findIcon(icon), 1);
+	}
+}
 
 class Icon {
 	constructor (obj) {
-		this.el = null;
+		this.jqEl = null;
 		this.imgHtml = `<img src='${obj.icon}'>`;
 	}
 	create () {
-		const el = $('<div>').addClass('icon');
-		el.append(this.imgHtml);
-		this.el = el;
-		return el
+		const div = $('<div>').addClass('icon');
+		div.append(this.imgHtml);
+		this.jqEl = div;
 	}
 	destroy () {
 
