@@ -143,11 +143,16 @@ class Icon {
 		this.parentObj = null;
 		this.site = obj.site;
 		this.channel = obj.channel;
+		this.name = obj.name;
 		this.imgHtml = `<img src='${ obj.icon }'>`;
+		this.borderColor = '#' + '000000' + ( parseInt( parseInt( this.channel, 36 ).toExponential().slice(2, -5), 10 ) & 0xFFFFFF ).toString(16).toUpperCase().slice(-6);
 	}
 	create () {
-		const div = $('<div>').addClass('icon');
-		div.append( this.imgHtml );
+		const div = $('<div>').addClass('icon tooltip n');
+		const label = `<span class='bubble'><span class='arrow'></span>${this.name}</span>`;
+		const img = this.applyBorder( this.imgHtml );
+		div.append( label );
+		div.append( img );
 		div.click( this.click.bind(this) );
 		this.jqEl = div;
 	}
@@ -167,5 +172,26 @@ class Icon {
 	}
 	update () {
 
+	}
+	shadeBorder (lighting) {
+	    const num = parseInt(this.borderColor.slice(1), 16),
+        amt = Math.round(2.55 * lighting),
+        R = (num >> 16) + amt,
+        G = (num >> 8 & 0x00FF) + amt,
+        B = (num & 0x0000FF) + amt;
+	    return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 + (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 + (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+	}
+	applyBorder (el) {
+		const highlight = this.shadeBorder(0);
+		const shadow = this.shadeBorder(-30);
+		const borderStyle = {
+			'border': '2px solid',
+			'border-top-color': highlight,
+			'border-right-color': highlight,
+			'border-bottom-color': shadow,
+			'border-left-color': shadow,
+			'border-radius': '4px'
+		};
+		return $(el).css(borderStyle);
 	}
 }
