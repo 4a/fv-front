@@ -29,6 +29,11 @@
 			height: 100px;
 		}
 
+		.icon {
+			display: inline-block;
+			cursor: pointer;
+		}
+
 		.icon img {
 			height: 50px;
 			width: 50px;
@@ -43,13 +48,7 @@
 	<div id="icons">
 		<h3>icons</h3>
 	</div>
-		<script type="text/javascript">
-		// stream example
-		const test = new StreamArea('#streams');
-		const a = new Stream('ttv', 'test');
-		test.addStream(a);
-
-		// icon example
+	<script type="text/javascript">
 		const testIcon = {
 			"name": "Test Icon",
 			"icon": "https://static-cdn.jtvnw.net/user-default-pictures/49988c7b-57bc-4dee-bd4f-6df4ad215d3a-profile_image-300x300.jpg",
@@ -57,9 +56,20 @@
 			"channel": "test"
 		};
 
-		const test2 = new IconArea('#icons');
-		const i = new Icon(testIcon);
-		test2.addIcon(i);
+		const testIcon2 = {
+			"name": "Test Icon 2",
+			"icon": "https://static-cdn.jtvnw.net/jtv_user_pictures/leveluplive-profile_image-c7daea88e66fbe44-70x70.png",
+			"site": "ttv",
+			"channel": "leveluplive"
+		};
+
+		const test = new App('#streams', '#icons');
+		const a = new Stream('ttv', 'test');
+		const b = new Icon(testIcon);
+		const c = new Icon(testIcon2);
+		test.streams.addStream(a);
+		test.icons.addIcon(b);
+		test.icons.addIcon(c);
 	</script>
 </body>
 </html>

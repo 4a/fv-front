@@ -41,6 +41,13 @@ const embed = {
 	}
 }
 
+class App {
+	constructor (streamContainer, iconContainer) {
+		this.streams = new StreamArea(streamContainer);
+		this.icons = new IconArea(this.streams, iconContainer);
+	}
+}
+
 class PageElement {
 	constructor (selector) {
 		this.element = $(selector);
@@ -55,13 +62,16 @@ class PageElement {
 }
 
 class StreamArea extends PageElement {
-	constructor (selector) {
-		super(selector)
-		this.streams = [];
+	constructor (streamContainer, streamsArray) {
+		super(streamContainer)
+		this.streams = streamsArray || [];
+		this.activeStream = null;
 	}
 	addStream (stream) {
 		if (this.findStream(stream) > -1) this.removeStream(stream);
+		this.activeStream = stream;
 		stream.create();
+		stream.parentObj = this;
 		this.element.append( stream.jqEl );
 		this.streams.push( stream );
 	}
@@ -79,6 +89,7 @@ class Stream {
 		this.site = site;
 		this.channel = channel;
 		this.jqEl = null;
+		this.parentObj = null;
 		this.selected = 0;
 		this.ratio = {
 			"A": 16,
@@ -88,7 +99,7 @@ class Stream {
 	}
 	create () {
 		const div = $('<div>').addClass('streamwrap');
-		const iframe = embed[this.site].getStream(this.channel);
+		const iframe = embed[this.site].getStream( this.channel );
 		this.jqEl = div.html(iframe);
 	}
 	destroy () {
@@ -98,9 +109,10 @@ class Stream {
 }
 
 class IconArea extends PageElement {
-	constructor (selector, icons) {
-		super(selector);
-		this.icons = icons || [];
+	constructor (controlArea, iconContainer, iconsArray) {
+		super(iconContainer);
+		this.controlArea = controlArea;
+		this.icons = iconsArray || [];
 		this.updateRate = 120000;
 	}
 	init () {
@@ -110,35 +122,45 @@ class IconArea extends PageElement {
 
 	}
 	addIcon (icon) {
-		if (this.findIcon(icon) > -1) this.removeStream(icon);
+		if (this.findIcon(icon) > -1) this.removeIcon(icon);
 		icon.create();
+		icon.parentObj = this;
 		this.element.append( icon.jqEl );
-		this.streams.push( icon );
+		this.icons.push(icon);
 	}
 	findIcon (icon) {
 		return this.icons.indexOf(icon)
 	}
 	removeIcon (icon) {
 		icon.jqEl.remove();
-		this.streams.splice(this.findIcon(icon), 1);
+		this.streams.splice( this.findIcon(icon), 1 );
 	}
 }
 
 class Icon {
 	constructor (obj) {
 		this.jqEl = null;
-		this.imgHtml = `<img src='${obj.icon}'>`;
+		this.parentObj = null;
+		this.site = obj.site;
+		this.channel = obj.channel;
+		this.imgHtml = `<img src='${ obj.icon }'>`;
 	}
 	create () {
 		const div = $('<div>').addClass('icon');
-		div.append(this.imgHtml);
+		div.append( this.imgHtml );
+		div.click( this.click.bind(this) );
 		this.jqEl = div;
 	}
 	destroy () {
 
 	}
 	click () {
-		
+		console.log(this);
+		const controlArea = this.parentObj.controlArea;
+		const stream = controlArea.activeStream;
+		stream.site = this.site;
+		stream.channel = this.channel;
+		controlArea.addStream(stream);
 	}
 	hover () {
 
