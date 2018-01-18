@@ -4,20 +4,6 @@
 	<title></title>
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 	<script type="text/javascript" src="resources/js/test.js"></script>
-	<script type="text/javascript">
-		
-		// example
-		function pageLoad() {
-			const test = new StreamArea('#streams');
-			const a = new Stream('ttv', 'test');
-			test.addStream(a);
-		}
-
-		$(document).ready(pageLoad);
-
-		
-
-	</script>
 	<style>
 		#streams {
 			background: #555;
@@ -52,5 +38,11 @@
 	<div id="icons">
 		<h3>icons</h3>
 	</div>
+		<script type="text/javascript">
+		// example
+		const test = new StreamArea('#streams');
+		const a = new Stream('ttv', 'test');
+		test.addStream(a);
+	</script>
 </body>
 </html>

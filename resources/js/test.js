@@ -50,9 +50,27 @@ class PageElement {
 class StreamArea extends PageElement {
 	constructor (selector) {
 		super(selector)
+		this.streams = [];
 	}
-	addStream (obj) {
-		if (!obj.el) this.element.append( obj.create() );
+	addStream (stream) {
+		if (this.findStream(stream) < 0) {
+			stream.create();
+			this.element.append( stream.el );
+			this.streams.push( stream );
+		} else {
+			this.removeStream(stream);
+			stream.create();
+			this.element.append( stream.el );
+			this.streams.push( stream );
+		}
+		// if (!stream.el) this.element.append( stream.create() );
+	}
+	findStream (stream) {
+		return this.streams.indexOf(stream)
+	}
+	removeStream (stream) {
+		stream.el.remove();
+		this.streams.splice(this.findStream(stream), 1);
 	}
 }
 
@@ -69,10 +87,10 @@ class Stream {
 		this.ratioLocked = 1;
 	}
 	create () {
+		console.log(this.channel);
 		const div = $('<div>').addClass('streamwrap');
 		const iframe = embed[this.site].getStream(this.channel);
 		this.el = div.html(iframe);
-		return this.el;
 	}
 	destroy () {
 		if (this.el) this.el.remove();
@@ -108,18 +126,26 @@ icon object:
 	"updated": date
 }
 */
-class Icon 
-{
-	constructor (parent, obj) {
-		this.parent = $(parent);
+
+const icons = [
+	{
+		"name": "Test Icon",
+		"icon": "https://static-cdn.jtvnw.net/user-default-pictures/49988c7b-57bc-4dee-bd4f-6df4ad215d3a-profile_image-300x300.jpg",
+		"site": "ttv",
+		"channel": "test"
+	}
+]
+
+class Icon {
+	constructor (obj) {
 		this.el = null;
 		this.imgHtml = `<img src='${obj.icon}'>`;
 	}
 	create () {
 		const el = $('<div>').addClass('icon');
-		el.append(imgHtml);
-		parent.append(el);
+		el.append(this.imgHtml);
 		this.el = el;
+		return el
 	}
 	destroy () {
 
