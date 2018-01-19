@@ -41,7 +41,7 @@ const embed = {
 	}
 }
 
-class App {
+class FVApp {
 	constructor (streamContainer, iconContainer, iconsArray, streamsArray) {
 		this.streams = new StreamArea(streamContainer, streamsArray);
 		this.icons = new IconArea(iconContainer, this.streams, iconsArray);
@@ -51,7 +51,12 @@ class App {
 class PageElement {
 	constructor (selector) {
 		this.element = $(selector);
-		this.position = null;
+		this.position = {
+			x: null,
+			y: null,
+			z: null
+		};
+		this.visible = 1;
 	}
 	move () {
 
@@ -61,11 +66,29 @@ class PageElement {
 	}
 }
 
+class User {
+
+}
+
+class MenuArea extends PageElement {
+
+}
+
+class Menu {
+
+}
+
 class StreamArea extends PageElement {
 	constructor (streamContainer, streamsArray) {
 		super(streamContainer)
 		this.streams = streamsArray || [];
 		this.activeStream = null;
+	}
+	load () {
+
+	}
+	update () {
+
 	}
 	addStream (stream) {
 		if (this.findStream(stream) > -1) this.removeStream(stream);
@@ -81,6 +104,12 @@ class StreamArea extends PageElement {
 	removeStream (stream) {
 		stream.jqEl.remove();
 		this.streams.splice(this.findStream(stream), 1);
+	}
+	clear () {
+
+	}
+	save () {
+
 	}
 }
 
@@ -146,6 +175,9 @@ class IconArea extends PageElement {
 		this.element.empty();
 		this.icons = [];
 	}
+	save () {
+
+	}
 }
 
 class Icon {
@@ -161,8 +193,7 @@ class Icon {
 		const div = $('<div>').addClass('icon tooltip n');
 		const label = `<span class='bubble'><span class='arrow'></span>${this.name}</span>`;
 		const img = this.applyBorder( this.imgHtml );
-		div.append( label );
-		div.append( img );
+		div.append( label, img );
 		div.click( this.click.bind(this) );
 		this.jqEl = div;
 	}
@@ -205,4 +236,44 @@ class Icon {
 		};
 		return $(el).css(borderStyle);
 	}
+}
+
+class ChatArea extends PageElement {
+
+}
+
+class Chat {
+
+}
+
+class TickerArea extends PageElement {
+
+}
+
+class Ticker {
+
+}
+
+class InputArea extends PageElement {
+
+}
+
+class WaifuBox {
+
+}
+
+class BetArea extends PageElement {
+
+}
+
+class Bet {
+
+}
+
+class PollArea extends PageElement {
+
+}
+
+class Poll {
+
 }
