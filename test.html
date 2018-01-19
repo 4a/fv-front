@@ -34,12 +34,15 @@
 			display: inline-block;
 			height: 50px;
 			width: 50px;
+			border-radius: 4px;
+			background-color: #000;
 			cursor: pointer;
 		}
 
 		.icon img {
 			height: 46px;
 			width: 46px;
+			position: relative;
 		}
 
 		.tooltip { 
@@ -89,38 +92,65 @@
 		.tooltip:hover span { 
 			display: block; 
 		}
+
+		.icon:hover img {
+			opacity: 0.7;
+			transition: all 0.3s ease-out;
+		}
+
+		.icon:after {
+		    content: "";
+		    position: absolute;
+		    top: 0px;
+		    left: 0px;
+		    width: 0%;
+		    height: 100%;
+		    background-color: rgba(255,255,255,0.4);
+		    transition: none;
+		}
+
+		.icon:hover:after {
+		    width: 120%;
+		    background-color: rgba(255,255,255,0);
+		    transition: all 0.25s ease-out;
+		}
 	</style>
 </head>
 <body>
 	<div id="streams">
-		<h3>streams</h3>
 	</div>
 
 	<div id="icons">
-		<h3>icons</h3>
 	</div>
 	<script type="text/javascript">
-		const testIcon = {
+		const iconsArray = [{
 			"name": "Test Icon",
 			"icon": "https://static-cdn.jtvnw.net/user-default-pictures/49988c7b-57bc-4dee-bd4f-6df4ad215d3a-profile_image-300x300.jpg",
 			"site": "ttv",
 			"channel": "test"
-		};
-
-		const testIcon2 = {
+		},
+		{
 			"name": "Level Up Live",
 			"icon": "https://static-cdn.jtvnw.net/jtv_user_pictures/leveluplive-profile_image-c7daea88e66fbe44-70x70.png",
 			"site": "ttv",
 			"channel": "leveluplive"
-		};
+		}];
 
-		const test = new App('#streams', '#icons');
+		const newIconTest = {
+			"name": "MF Biscuits",
+			"icon": "https://static-cdn.jtvnw.net/jtv_user_pictures/mr_biscuits-profile_image-f4a7d2271e593f0c-300x300.png",
+			"site": "ttv",
+			"channel": "mr_biscuits"
+		}
+
+		const test = new App('#streams', '#icons', iconsArray);
 		const a = new Stream('ttv', 'test');
-		const b = new Icon(testIcon);
-		const c = new Icon(testIcon2);
+
 		test.streams.addStream(a);
-		test.icons.addIcon(b);
-		test.icons.addIcon(c);
+		test.icons.load();
+
+		iconsArray.push(newIconTest)
+		test.icons.load();
 	</script>
 </body>
 </html>
