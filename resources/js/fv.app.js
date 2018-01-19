@@ -1,7 +1,7 @@
 "use strict";
 
 const embed = {
-	"getHtml": (url) => `<iframe class='stream' src='${url}' frameborder=0 scrolling='no' allowfullscreen></iframe>`,
+	"getHtml": (url) => `<iframe class='stream' src='https:${url}' frameborder=0 scrolling='no' allowfullscreen></iframe>`,
 	"pattern": /(https?:\/\/)|(www.)|(twitch.tv\/)|(justin.tv\/)|(ustream.tv\/(channel\/)?)|(livestream.com\/)|((live.)?nicovideo.jp\/watch\/)|(hitbox.tv\/)|((gaming.)?youtube.com\/(watch\?v=)?(v\/)?)|(youtu.be\/)/gi,
 	"ttv": {
 		"bar": 0,
