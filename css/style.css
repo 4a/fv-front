@@ -138,7 +138,7 @@ nav {
     transform: translateX(calc(-25% + 0.25em));
     padding: 0.1em;
     padding-bottom: 0.25em;
-    width: 80px;
+    min-width: 80px;
     cursor: pointer;
     background-color: #000060;
     border: 1px #09f solid;
