@@ -79,9 +79,9 @@ nav {
     color: #fff;
     background-color: #000;
     width: 100%;
-    padding-bottom: 30px;
-    /* overflow: hidden;
-    resize: horizontal; */
+    /* padding-bottom: 30px; */
+    /* overflow: hidden; */
+    /* resize: horizontal; */
 }
 [style*="--aspect-ratio"] {
     position: relative;
