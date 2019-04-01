@@ -1,13 +1,11 @@
 # FV
 
-git clone https://github.com/4a/fv.git
+preview: http://fightanvidya.com/4a4a/2019
 
-cd fv
-
-npm install
-
-npm start
-
+install to environment with php7 (xampp or mamp or something)
+install mariadb or mysql
+import tables from sql directory
+set login info in api/connect.php
 
 # License
 
