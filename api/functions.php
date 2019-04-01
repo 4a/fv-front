@@ -145,16 +145,17 @@ function updateTwitchChannels($conn, $data) {
         $liveChannels[] = $name;
         $otherUpdates[$name] = [
             'channel' => $name,
+            'isOnline' => 1,
             'iconExternal' => $iconExternal
             // 'popularity' => $popularity
         ];
     }
     
     $offline = array_diff($twitchChannels, $liveChannels);
-    updateLiveStatus($conn, true, $liveChannels, 'twitch');
     foreach ($otherUpdates as $channel) {
         updateMiscAttributes($conn, $channel, 'twitch');
     }
+    updateLiveStatus($conn, true, $liveChannels, 'twitch'); // TODO: remove since we're looping through everything anyways
     updateLiveStatus($conn, false, $offline, 'twitch');
     return $newData;
 }
