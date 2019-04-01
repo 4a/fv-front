@@ -53,7 +53,7 @@ function embed($type, $files) {
             <section class="grid">
                 <section class="stream-area">
                     <div class="stream twitch selected" style="--aspect-ratio:16/9">
-                        <iframe class="player" src="https://player.twitch.tv/?channel=leveluplive"></iframe>
+                        <!-- <iframe class="player" src="https://player.twitch.tv/?channel=leveluplive"></iframe> -->
                     </div>
                 </section>
                 <section class="chat-area">

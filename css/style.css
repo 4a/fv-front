@@ -153,10 +153,14 @@ nav {
 .channel.offline {
     display: none;
 }
+.channel.offline:not([data-popularity="0"]) {
+    display: inline-block;
+    filter: grayscale(100%);
+}
 .channel .icon {
     height: 50px;
     width: 50px;
-    opacity: 0.5;
+    opacity: 0.25;
     transition: opacity 250ms ease-in;
 }
 .channel .icon.external {

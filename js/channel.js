@@ -115,6 +115,7 @@ const Channels = (function ChannelModule() {
         button.type = "button";
         button.classList = "channel";
         button.classList += this.online ? " online" : " offline";
+        button.dataset.popularity = this.popularity;
         // button.disabled = !this.online;
 
         var icon = document.createElement("img");
@@ -135,7 +136,7 @@ const Channels = (function ChannelModule() {
         var label = document.createElement("label");
         label.htmlFor = id;
         label.classList = "label";
-        label.textContent = this.label;
+        label.textContent = this.popularity ? `${this.label} (${this.popularity})` : this.label;
 
         button.appendChild(icon);
         button.appendChild(label);
@@ -151,13 +152,23 @@ const Channels = (function ChannelModule() {
     function updateIconElement() {
         if (!this.nodes.icon) this.nodes.icon = this.createIconElement();
         var button = this.nodes.icon;
+        var label = button.querySelector(".label");
+
         var hasStatus = button.className.match(/o(n|ff)line/gi);
         var DOMStatus = hasStatus ? hasStatus[0] : "offline";
         var status = this.online ? "online" : "offline";
         if (DOMStatus !== status) {
             swapClass(button.classList, DOMStatus, status);
-            console.log(`Updated ${this.label} element:`, this);
+            console.log(`Updated ${this.label} element status:`, this);
         }
+
+        var DOMPopularity = button.dataset.popularity;
+        if (DOMPopularity != this.popularity) {
+            button.dataset.popularity = this.popularity;
+            label.textContent = this.popularity ? `${this.label} (${this.popularity})` : this.label;
+            console.log(`Updated ${this.label} element popularity:`, this);
+        }
+
         return button;
     }
 
@@ -216,6 +227,7 @@ const Channels = (function ChannelModule() {
     }
 
     return {
-        init
+        init,
+        _channelPool
     };
 })();

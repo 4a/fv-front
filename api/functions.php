@@ -85,7 +85,7 @@ function addChannels($conn, $src, $channels) {
 // TODO: Sanitize data
 function updateLiveStatus($conn, $isOnline, $channels, $src) {
     $channels = implode($channels, "','");
-    $isOnline = $isOnline ? 'TRUE' : 'FALSE';
+    $isOnline = $isOnline ? 1 : 0;
     $sql = "UPDATE channels";
     $sql .= " SET online = $isOnline";
     $sql .= " WHERE channel IN ('$channels') AND src = '$src'";
@@ -100,9 +100,13 @@ function updateLiveStatus($conn, $isOnline, $channels, $src) {
 function updateMiscAttributes($conn, $atts, $src) {
     $channel = $atts['channel'];
     $iconExternal = $atts['iconExternal'];
+    $isOnline = $atts['isOnline'] ? 1 : 0;
+    $popularity = $atts['popularity'];
 
     $sql = "UPDATE channels";
     $sql .= " SET iconExternal = '$iconExternal'";
+    $sql .= ", online = $isOnline";
+    $sql .= ", popularity = $popularity";
     $sql .= " WHERE channel = '$channel' AND src = '$src'";
 
     if ($conn->query($sql) === TRUE) {
@@ -130,7 +134,8 @@ function updateTwitchChannels($conn, $data) {
     $twitchChannels = [];
     $liveChannels = [];
     $otherUpdates = [];
-    $popularChannels = fetchChannels($conn);
+    
+    $popularData = fetchPopular($conn);
 
     foreach ($data as $channel) {
         if ($channel['src'] == "twitch") $twitchChannels[] = $channel['channel'];
@@ -139,23 +144,24 @@ function updateTwitchChannels($conn, $data) {
     $newData = json_decode($response);
     foreach ($newData->streams as $online) {
         $name = $online->channel->name;
-        // $label = $online->channel->display_name;
+        $label = $online->channel->display_name;
         $iconExternal = $online->channel->logo;
+        $popularity = isset($popularData['ttv'][$name]) ? $popularData['ttv'][$name]['popularity'] : 0;
 
         $liveChannels[] = $name;
         $otherUpdates[$name] = [
             'channel' => $name,
             'isOnline' => 1,
-            'iconExternal' => $iconExternal
-            // 'popularity' => $popularity
+            'iconExternal' => $iconExternal,
+            'popularity' => $popularity
         ];
     }
     
     $offline = array_diff($twitchChannels, $liveChannels);
-    foreach ($otherUpdates as $channel) {
-        updateMiscAttributes($conn, $channel, 'twitch');
+    foreach ($otherUpdates as $atts) {
+        updateMiscAttributes($conn, $atts, 'twitch');
     }
-    updateLiveStatus($conn, true, $liveChannels, 'twitch'); // TODO: remove since we're looping through everything anyways
+    // updateLiveStatus($conn, true, $liveChannels, 'twitch'); // TODO: remove since we're looping through everything anyways
     updateLiveStatus($conn, false, $offline, 'twitch');
     return $newData;
 }
