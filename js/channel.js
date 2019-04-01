@@ -62,7 +62,7 @@ const Channels = (function ChannelModule() {
                 Object.assign(channels[_id], data[_id]);
             } else {
                 channels[_id] = new Model(data[_id]);
-                // console.log(`Created ${channels[_id].label} data:`, channels[_id]);
+                console.log(`Created ${channels[_id].label} data:`, channels[_id]);
             }
         }
         return channels;
@@ -75,7 +75,7 @@ const Channels = (function ChannelModule() {
      */
     function addIconsToDOM(channels) {
         for (let _id in channels) {
-            if (!channels.hasOwnProperty(_id)) continue;
+            if (!channels.hasOwnProperty(_id)) continue; // for inherited properties?
             let channel = channels[_id];
             channel.createIconElement();
         }
@@ -148,6 +148,7 @@ const Channels = (function ChannelModule() {
      * @returns DOM node reference
      */
     function updateIconElement() {
+        if (!this.nodes.icon) this.nodes.icon = this.createIconElement();
         var button = this.nodes.icon;
         var hasStatus = button.className.match(/o(n|ff)line/gi);
         var DOMStatus = hasStatus ? hasStatus[0] : "offline";
