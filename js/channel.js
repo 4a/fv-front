@@ -7,7 +7,8 @@ const Channels = (function ChannelModule() {
     Model.prototype = {
         getUptime,
         createIconElement,
-        updateIconElement
+        updateIconElement,
+        deleteIconElement
     };
 
     const _channelPool = {};
@@ -36,6 +37,7 @@ const Channels = (function ChannelModule() {
         }
         var data = await fetchData("api/channels");
         var channels = updateData(data);
+        channels = deleteExpiredData(data);
         updateIconsInDOM(channels);
     }
 
@@ -57,12 +59,25 @@ const Channels = (function ChannelModule() {
     function updateData(data) {
         var channels = _channelPool;
         for (let _id in data) {
-            if (!data.hasOwnProperty(_id)) continue;
+            if (!data.hasOwnProperty(_id)) continue; // skip prototype properties
             if (channels.hasOwnProperty(_id)) {
                 Object.assign(channels[_id], data[_id]);
             } else {
                 channels[_id] = new Model(data[_id]);
                 console.log(`Created ${channels[_id].label} data:`, channels[_id]);
+            }
+        }
+        return channels;
+    }
+
+    function deleteExpiredData(data) {
+        var channels = _channelPool;
+        for (let _id in channels) {
+            if (!channels.hasOwnProperty(_id)) continue; // skip prototype properties
+            if (!data.hasOwnProperty(_id)) {
+                console.log(`Deleting ${channels[_id].label} data:`, channels[_id]);
+                channels[_id].deleteIconElement();
+                delete channels[_id];
             }
         }
         return channels;
@@ -170,6 +185,11 @@ const Channels = (function ChannelModule() {
         }
 
         return button;
+    }
+
+    function deleteIconElement() {
+        if (!this.nodes.icon) throw "Icon doesn't exist??";
+        return this.nodes.icon.remove();
     }
 
     function generateIconBorder(channel) {

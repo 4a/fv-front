@@ -51,6 +51,9 @@ function embed($type, $files) {
                 <span class="submenu-item">Free Chat Box</span>
             </nav>
             <section class="grid">
+                <section class="mobile-header" style="">
+                <img class="mobile-logo" src="http://fightanvidya.com/IS/mob_logo.png" alt="Fightan Vidya">
+            </section>
                 <section class="stream-area">
                     <div class="stream twitch selected" style="--aspect-ratio:16/9">
                         <!-- <iframe class="player" src="https://player.twitch.tv/?channel=leveluplive"></iframe> -->
