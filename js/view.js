@@ -28,9 +28,25 @@ const Views = (function ViewModule() {
         },
         youtube: {
             getUrl: function generateYoutubeURL(v) {
-                return `https://youtube.com/embed/v/${v}?autoplay=1&hl=en_US&color=white&enablejsapi=1&showinfo=1&autohide=2&html5=1`;
+                return `https://youtube.com/embed/${v}?autoplay=1&hl=en_US&color=white&enablejsapi=1&showinfo=1&autohide=2&html5=1`;
             },
             embed: function embedYoutube(view, sameSrc = false) {
+                createIframeElement(view);
+            }
+        },
+        vaughnlive: {
+            getUrl: function generateVaughnliveURL(channel) {
+                return `https://vaughn.live/embed/video/${channel}?viewers=true&autoplay=true`;
+            },
+            embed: function embedVaughnlive(view, sameSrc = false) {
+                createIframeElement(view);
+            }
+        },
+        angelthump: {
+            getUrl: function generateVaughnliveURL(channel) {
+                return `https://player.angelthump.com/?channel=${channel}`;
+            },
+            embed: function embedAngelthump(view, sameSrc = false) {
                 createIframeElement(view);
             }
         }

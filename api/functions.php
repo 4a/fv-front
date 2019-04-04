@@ -54,11 +54,11 @@ function fetchPopular($conn) {
     return $output;
 }
 
-function addChannels($conn, $src, $channels) {
+function addChannels($conn, $channels) {
     $values = [];
     foreach ($channels as $channel) {
         $value = "(";
-        $value .= "'" . $src . "'";
+        $value .= "'" . $channel['src'] . "'";
         $value .= ", '" . $channel['channel'] . "'";
         $value .= ", '" . $channel['label'] . "'";
         $value .= ", '" . $channel['isOnline'] . "'";
@@ -152,9 +152,9 @@ function updateMiscAttributes($conn, $atts, $src) {
     $popularity = $atts['popularity'];
 
     $sql = "UPDATE channels";
-    $sql .= " SET iconExternal = '$iconExternal'";
+    $sql .= " SET popularity = $popularity";
     $sql .= ", online = $isOnline";
-    $sql .= ", popularity = $popularity";
+    $sql .= $iconExternal ? ", iconExternal = '$iconExternal'" : "";
     $sql .= " WHERE channel = '$channel' AND src = '$src'";
 
     if ($conn->query($sql) === TRUE) {
@@ -238,29 +238,61 @@ function updateTwitchChannels($conn, $data) {
 }
 
 function addTemporaryTwitchChannels($conn, $data) {
+    $channelAdditions = [];
+
     $twitchChannels = [];
-    $popularChannels = [];
-    $channelsToAdd = [];
+    $popularTwitchChannels = [];
+
+    $youtubeChannels = [];
+    $popularYoutubeChannels = [];
+
+    $vaughnliveChannels = [];
+    $popularVaughnliveChannels = [];
     
     $popularData = fetchPopular($conn);
     foreach ($popularData as $site => $channel) {
-        if ($site === 'twitch' || $site == "ttv") {
+        if ($site === 'twitch' || $site === "ttv") {
             foreach ($channel as $name => $arr) {
-                $popularChannels[] = $name;
+                $popularTwitchChannels[] = $name;
+            }
+        }
+        if ($site === 'youtube' || $site === "yut") {
+            foreach ($channel as $name => $arr) {
+                $popularYoutubeChannels[] = $name;
+            }
+        }
+        if ($site === 'vaughnlive' || $site === "vtv") {
+            foreach ($channel as $name => $arr) {
+                $popularVaughnliveChannels[] = $name;
             }
         }
     }
 
     foreach ($data as $channel) {
-        if ($channel['src'] == "twitch") $twitchChannels[] = $channel['channel'];
+        switch ($channel['src']) {
+            case "twitch":
+                $twitchChannels[] = $channel['channel'];
+                break;
+            case "youtube":
+                $youtubeChannels[] = $channel['channel'];
+                break;
+            case "youtube":
+                $vaughnliveChannels[] = $channel['channel'];
+                break;
+            default:
+                continue;
+        }
     }
 
-    $unique = array_diff($popularChannels, $twitchChannels);
-    $response = curl_get_contents("https://api.twitch.tv/kraken/streams?channel=". implode($unique, ','), "1p9iy0mek7mur7n1jja9lejw3");
-    $newData = json_decode($response);
+    $unknownTwitchChannels = array_diff($popularTwitchChannels, $twitchChannels);
+    $unknownYoutubeChannels = array_diff($popularYoutubeChannels, $youtubeChannels);
+    $unknownVaughnliveChannels = array_diff($popularVaughnliveChannels, $vaughnliveChannels);
+
+    $response = curl_get_contents("https://api.twitch.tv/kraken/streams?channel=". implode($unknownTwitchChannels, ','), "1p9iy0mek7mur7n1jja9lejw3");
+    $twitchResponse = json_decode($response);
 
     $temp = [];
-    foreach ($newData->streams as $online) {
+    foreach ($twitchResponse->streams as $online) {
         $name = $online->channel->name;
         $label = $online->channel->display_name;
         $isOnline = 1;
@@ -271,7 +303,8 @@ function addTemporaryTwitchChannels($conn, $data) {
         $dateCreated = $popularData['ttv'][$name]['createdTime'];
 
         $temp[] = $name;
-        $channelsToAdd[] = [
+        $channelAdditions[] = [
+            'src' => 'twitch',
             'channel' => $name,
             'label' => $label,
             'isOnline' => $isOnline,
@@ -283,18 +316,19 @@ function addTemporaryTwitchChannels($conn, $data) {
         ];
     }
 
-    $offline = array_diff($popularChannels, $temp);
-    foreach ($offline as $channel) {
+    $offlineTwitch = array_diff($unknownTwitchChannels, $temp);
+    foreach ($offlineTwitch as $channel) {
         $name = $channel;
         $label = $channel;
         $isOnline = 0;
         $expires = 1;
-        $iconExternal = "http://fightanvidya.com/twitch.png";
+        $iconExternal = "";
         $popularity = $popularData['ttv'][$name]['popularity'];
         $sessionStart = $popularData['ttv'][$name]['timeStamp'];
         $dateCreated = $popularData['ttv'][$name]['createdTime'];
 
-        $channelsToAdd[] = [
+        $channelAdditions[] = [
+            'src' => 'twitch',
             'channel' => $name,
             'label' => $label,
             'isOnline' => $isOnline,
@@ -306,7 +340,58 @@ function addTemporaryTwitchChannels($conn, $data) {
         ];
     }
 
-    if (count($channelsToAdd)) addChannels($conn, "twitch", $channelsToAdd);
-    resetUnpopularChannels($conn, "twitch", $popularChannels);
-    return $channelsToAdd;
+    foreach ($unknownYoutubeChannels as $channel) {
+        $name = $channel;
+        $label = $channel;
+        $isOnline = 1;
+        $expires = 1;
+        $iconExternal = "https://img.youtube.com/vi/" . $channel . "/default.jpg";
+        $popularity = $popularData['yut'][$name]['popularity'];
+        $sessionStart = $popularData['yut'][$name]['timeStamp'];
+        $dateCreated = $popularData['yut'][$name]['createdTime'];
+
+        $channelAdditions[] = [
+            'src' => 'youtube',
+            'channel' => $name,
+            'label' => $label,
+            'isOnline' => $isOnline,
+            'expires' => $expires,
+            'iconExternal' => $iconExternal,
+            'popularity' => $popularity,
+            'sessionStart' => $sessionStart,
+            'dateCreated' => $dateCreated
+        ];
+    }
+
+    foreach ($unknownVaughnliveChannels as $channel) {
+        $name = $channel;
+        $label = $channel;
+        $isOnline = 1;
+        $expires = 1;
+        $iconExternal = "https://cdn.vaughnsoft.net/profile/999999/" . $channel . ".jpg";
+        $popularity = $popularData['vtv'][$name]['popularity'];
+        $sessionStart = $popularData['vtv'][$name]['timeStamp'];
+        $dateCreated = $popularData['vtv'][$name]['createdTime'];
+
+        $channelAdditions[] = [
+            'src' => 'vaughnlive',
+            'channel' => $name,
+            'label' => $label,
+            'isOnline' => $isOnline,
+            'expires' => $expires,
+            'iconExternal' => $iconExternal,
+            'popularity' => $popularity,
+            'sessionStart' => $sessionStart,
+            'dateCreated' => $dateCreated
+        ];
+    }
+
+    // print_r($channelAdditions);
+
+    if (count($channelAdditions)) addChannels($conn, $channelAdditions);
+    resetUnpopularChannels($conn, "twitch", $popularTwitchChannels); // FIXME: 3rd parameter is channels to ignore, probably rename
+    resetUnpopularChannels($conn, "youtube", $popularYoutubeChannels);
+
+    return $channelAdditions;
 }
+
