@@ -1,16 +1,32 @@
 "use strict";
-
 (function initFV() {
+    window.useInternal = true;
     Channels.init();
+
+    Views.init();
 
     var chat = new Chatango(document.querySelector(".chat-area"));
     chat.asyncLoad();
 
     Config.init(document.querySelector(".config"));
+
+    var mobileLogo = document.querySelector(".mobile-logo");
+    mobileLogo.addEventListener("click", toggleMobileIcons);
 })();
+
+function toggleMobileIcons() {
+    var controllers = document.querySelector(".controllers");
+    if (controllers.className.match("default")) swapClass(controllers.classList, "default", "reveal");
+    else swapClass(controllers.classList, "reveal", "default");
+}
 
 function defer(callback) {
     setTimeout(callback, 0);
+}
+
+function clone(obj) {
+    if (!obj) throw "No object to clone";
+    return JSON.parse(JSON.stringify(obj));
 }
 
 function getRandomWithinRange(min, max) {

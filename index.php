@@ -1,5 +1,5 @@
 <?php 
-$css = ['hamburgers', 'style'];
+$css = ['lib/material-icons', 'lib/hamburgers', 'style'];
 $js = ['view', 'channel', 'chat', 'config', 'app'];
 
 function embed($type, $files) {
@@ -28,7 +28,7 @@ function embed($type, $files) {
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <title>Fightan Vidya</title>
         <?php embed('css', $css) ?>
@@ -55,15 +55,23 @@ function embed($type, $files) {
                 <img class="mobile-logo" src="http://fightanvidya.com/IS/mob_logo.png" alt="Fightan Vidya">
             </section>
                 <section class="stream-area">
-                    <div class="stream twitch selected" style="--aspect-ratio:16/9">
-                        <!-- <iframe class="player" src="https://player.twitch.tv/?channel=leveluplive"></iframe> -->
-                    </div>
+                    <!-- <div class="view">
+                        <div class="stream twitch selected" style="--aspect-ratio:16/9">
+                        </div>
+                        <div class="view-controller">
+                            <i class="material-icons add"></i>
+                            <i class="material-icons remove"></i>
+                            <i class="material-icons star"></i>
+                            <i class="material-icons chat"></i>
+                            <i class="material-icons resize"></i>
+                        </div>
+                    </div> -->
                 </section>
                 <section class="chat-area">
                     <div class="placeholder"></div>
                 </section>
             </section>
-            <section class="controllers">
+            <section class="controllers default">
                 <section class="waifu-box">
                     neo waifu box
                 </section>

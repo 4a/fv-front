@@ -1,5 +1,6 @@
 html {
     min-height: 100%;
+    user-select: none;
 }
 body {
     background: linear-gradient(#0a0138, #020107 600px);
@@ -12,6 +13,59 @@ header {
 nav {
     text-align: center;
 }
+.material-icons {
+    display: inline-block;
+    color: #09f;
+}
+
+.material-icons.add:after {
+    content: "add";
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.material-icons.remove:after {
+    content: "remove";
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.material-icons.star:after {
+    content: "star_border";
+    cursor: pointer;
+}
+
+.active .material-icons.star:after {
+    content: "star";
+    cursor: pointer;
+}
+
+.material-icons.chat:after {
+    content: "chat_bubble";
+    cursor: pointer;
+}
+
+.material-icons.resize:after {
+    content: "transform";
+    cursor: se-resize;
+}
+
+.view-controller {
+    display: grid;
+    margin-top: 0.5em;
+    grid-template-columns: 5% 5% 80% 5% 5%;
+    text-align: center;
+}
+.view-controller * {
+    opacity: 0.5;
+    transition: opacity 0.2s ease-in;
+}
+
+.view-controller *:hover {
+    opacity: 1;
+    transition: opacity 0s ease-in;
+}
+
 .grid {
     resize: horizontal;
     overflow: hidden;
@@ -42,7 +96,7 @@ nav {
 .stream-area {
     display: grid;
     grid-template-columns: auto;
-    background-color: #8f8;
+    /* background-color: #8f8; */
 }
 .chat-area {
     background-color: transparent;
@@ -137,8 +191,8 @@ nav {
     position: absolute;
     z-index: 1;
     margin-top: 0.25em;
-    /* margin-left: -18px; */
-    transform: translateX(calc(-25% + 0.25em));
+    margin-left: 50%;
+    transform: translateX(-50%);
     padding: 0.1em;
     padding-bottom: 0.25em;
     min-width: 80px;
@@ -171,6 +225,7 @@ nav {
     width: 46px;
     border: 2px solid #777;
     border-radius: 4px;
+    object-fit: cover;
 }
 .channel:hover .icon {
     opacity: 1;
@@ -254,7 +309,8 @@ footer {
     header,
     nav.submenu,
     footer,
-    .controllers {
+    .view-controller,
+    .controllers.default {
         display: none;
     }
     .grid {
@@ -282,6 +338,7 @@ footer {
         margin: 0;
     }
     .hamburger {
+        position: absolute;
         top: 0;
         right: 0;
     }
@@ -290,6 +347,14 @@ footer {
     }
     .fv-main.push {
         margin: 0;
+    }
+    .controllers.reveal {
+        display: block;
+        position: absolute;
+        top: 60px;
+        height: calc(100vh - 60px);
+        width: 100%;
+        background: black;
     }
     .grid {
         height: calc(100vh);

@@ -1,19 +1,22 @@
 const Views = (function ViewModule() {
-    const Model = function View() {
-        this.type = "DOM";
-        this.data = null;
-        this.apiObj = null;
+    const Model = function View(template) {
+        this._id = "FVS_" + Date.now();
+        this.type = template ? template.type : "DOM";
+        this.data = template ? template.data : null;
+        this.playerAPI = null;
         this.element = null;
         this.history = [];
     };
 
     Model.prototype = {
         changeChannel,
+        createViewElement,
+        setActive,
         sudoku
     };
 
-    const _viewInstances = [];
-    var _activeIndex = 0;
+    const _viewPool = {};
+    var _active = null;
 
     const _sources = {
         twitch: {
@@ -21,8 +24,8 @@ const Views = (function ViewModule() {
                 return `https://player.twitch.tv/?channel=${channel}`;
             },
             embed: function embedTwitch(view, sameSrc = false) {
-                if (sameSrc) return view.element.setChannel(view.data.channel), view.element;
-                else if (Twitch) return createTwitchElement(view);
+                if (sameSrc) return view.playerAPI.setChannel(view.data.channel), view.element;
+                else if (window.Twitch) return createTwitchElement(view);
                 else return createIframeElement(view);
             }
         },
@@ -43,32 +46,60 @@ const Views = (function ViewModule() {
             }
         },
         angelthump: {
-            getUrl: function generateVaughnliveURL(channel) {
+            getUrl: function generateAngelthumpURL(channel) {
                 return `https://player.angelthump.com/?channel=${channel}`;
             },
             embed: function embedAngelthump(view, sameSrc = false) {
                 createIframeElement(view);
             }
+        },
+        any: {
+            getUrl: function genericIframe(src) {
+                return src;
+            },
+            embed: function embedGeneric(view, sameSrc = false) {
+                createIframeElement(view);
+            }
         }
     };
 
+    function init() {
+        var view = add();
+        view.createViewElement();
+        view.setActive();
+    }
+
+    function getActive() {
+        var view = _viewPool[_active];
+        console.log(_active);
+        return view;
+    }
+
     function setActive() {
-        var nodeList = document.querySelectorAll(".stream-area .stream");
-        _activeIndex = indexOfDOMNode(nodeList, this.element);
-        return _viewInstances[_activeIndex];
+        _active = this._id;
+        displayActiveElement(this._id);
+        return this;
+    }
+
+    function displayActiveElement(id) {
+        var active = document.getElementById(id);
+        var views = document.querySelectorAll(".view");
+        for (let view of views) {
+            view.classList.remove("active");
+        }
+        active.classList.add("active");
     }
 
     function changeChannel(data) {
         var sameSrc = false;
-        var view = _viewInstances.length ? _viewInstances[_activeIndex] : add();
-        if (view.data) {
-            sameSrc = view.data.src === data.src;
-            view.history.push(view.data);
+        if (this.data && this.playerAPI) {
+            sameSrc = this.data.src === data.src;
+            this.history.push(this.data);
         }
-        view.data = data;
-        switch (view.type) {
+        this.data = data;
+        switch (this.type) {
             case "DOM":
-                view.element = _sources[view.data.src].embed(view, sameSrc);
+                _sources[this.data.src].embed(this, sameSrc);
                 break;
             case "window":
                 console.log("hi");
@@ -79,31 +110,85 @@ const Views = (function ViewModule() {
         highlightViewedChannels();
     }
 
-    function add() {
-        var view = new Model();
-        _viewInstances.push(view);
+    function add(template) {
+        var view = new Model(template);
+        _viewPool[view._id] = view;
         return view;
     }
 
-    function createTwitchElement(view, target) {
-        target = target || document.querySelector(".stream-area .stream");
-        target.id = "twitch-embed";
+    function handleAddClick() {
+        this.createViewElement();
+        this.changeChannel(this.data);
+    }
+
+    function createViewElement() {
+        var view = this;
+        var container = document.querySelector(".stream-area");
+
+        var viewElement = document.createElement("div");
+        viewElement.id = view._id;
+        viewElement.className = "view";
+
+        var stream = document.createElement("div");
+        stream.className = "stream";
+        stream.style = "--aspect-ratio:16/9";
+
+        var controller = document.createElement("div");
+        controller.className = "view-controller";
+
+        var addIcon = icon("add");
+        addIcon.addEventListener("click", function() {
+            var newView = add(view);
+            handleAddClick.call(newView);
+        });
+
+        var removeIcon = icon("remove");
+        removeIcon.addEventListener("click", function() {
+            view.sudoku();
+        });
+
+        var starIcon = icon("star");
+        starIcon.addEventListener("click", function() {
+            view.setActive();
+        });
+
+        var chatIcon = icon("chat");
+        var resizeIcon = icon("resize");
+        controller.append(addIcon, removeIcon, starIcon, chatIcon, resizeIcon);
+
+        viewElement.append(stream, controller);
+        container.append(viewElement);
+
+        this.element = viewElement;
+        return viewElement;
+
+        function icon(type) {
+            var element = document.createElement("i");
+            element.className = "material-icons " + type;
+            return element;
+        }
+    }
+
+    function createTwitchElement(view) {
+        target = view.element.querySelector(".stream");
+        target.id = view._id + "_twitch";
         target.textContent = "";
-        var player = new Twitch.Player("twitch-embed", {
+        var player = new window.Twitch.Player(target.id, {
             width: "100%",
             height: "100%",
             channel: view.data.channel,
             layout: "video",
             theme: "dark"
         });
-        var element = player._bridge._iframe;
-        element.className = "player";
-        window.test = player;
-        return player;
+        var iframe = player._bridge._iframe;
+        iframe.className = "player";
+        view.playerAPI = player;
+        return iframe;
     }
 
-    function createIframeElement(view, target) {
-        target = target || document.querySelector(".stream-area .stream");
+    function createIframeElement(view) {
+        target = view.element.querySelector(".stream");
+        view.playerAPI = null;
         var url = _sources[view.data.src].getUrl(view.data.channel);
         var iframe = document.createElement("iframe");
         iframe.className = "player";
@@ -118,17 +203,18 @@ const Views = (function ViewModule() {
         for (let icon of icons) {
             icon.classList.remove("active");
         }
-        for (let view of _viewInstances) {
+        var views = Object.keys(_viewPool);
+        for (let key of views) {
+            let view = _viewPool[key];
             let id = "FV_" + view.data._id;
             document.getElementById(id).classList.add("active");
         }
     }
 
     function sudoku() {
+        if (Object.keys(_viewPool).length < 2) throw "Should we delete the last element??";
         switch (this.type) {
             case "DOM":
-                var nodeList = document.querySelectorAll(".stream-area .stream");
-                var index = indexOfDOMNode(nodeList, this.element);
                 removeElementFromDOM.call(this);
                 break;
             case "window":
@@ -137,7 +223,8 @@ const Views = (function ViewModule() {
             default:
                 console.log("hey");
         }
-        return _viewInstances.splice(index, 1);
+        delete _viewPool[this._id];
+        return _viewPool;
     }
 
     function removeElementFromDOM() {
@@ -145,8 +232,11 @@ const Views = (function ViewModule() {
     }
 
     return {
+        init,
         add,
+        getActive,
         setActive,
-        changeChannel
+        changeChannel,
+        _viewPool
     };
 })();

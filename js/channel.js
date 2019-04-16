@@ -20,7 +20,7 @@ const Channels = (function ChannelModule() {
         applyIconClicks();
         var data = await fetchData("api/channels");
         var channels = updateData(data);
-        addIconsToDOM(channels);
+        // addIconsToDOM(channels);
         pollAPI(true, 60000);
     }
 
@@ -103,11 +103,13 @@ const Channels = (function ChannelModule() {
      * @returns channels param reference (usually _channelPool)
      */
     function updateIconsInDOM(channels) {
+        var updatedDOM = false;
         for (let _id in channels) {
             if (!channels.hasOwnProperty(_id)) continue;
             let channel = channels[_id];
-            channel.updateIconElement();
+            if (channel.updateIconElement()) updatedDOM = true;
         }
+        if (updatedDOM) sortIconsByPopularity(channels);
         return channels;
     }
 
@@ -134,11 +136,10 @@ const Channels = (function ChannelModule() {
         // button.disabled = !this.online;
 
         var icon = document.createElement("img");
-        window.useInternal = true;
         if (window.useInternal && this.icon !== "http://fightanvidya.com/SI/IC/") {
             icon.src = this.icon;
             icon.classList = "icon";
-        } else {
+        } else if (this.iconExternal) {
             icon.src = this.iconExternal;
             icon.classList = "icon external";
             var border = generateIconBorder(this.channel);
@@ -146,6 +147,9 @@ const Channels = (function ChannelModule() {
             icon.style["border-right-color"] = border.right;
             icon.style["border-left-color"] = border.left;
             icon.style["border-bottom-color"] = border.bottom;
+        } else {
+            icon.src = "http://fightanvidya.com/SI/IC/twitch.png";
+            icon.classList = "icon external";
         }
 
         var label = document.createElement("label");
@@ -165,8 +169,13 @@ const Channels = (function ChannelModule() {
      * @returns DOM node reference
      */
     function updateIconElement() {
-        if (!this.nodes.icon) this.nodes.icon = this.createIconElement();
+        var updated = false;
+        if (!this.nodes.icon) {
+            this.nodes.icon = this.createIconElement();
+            updated = true;
+        }
         var button = this.nodes.icon;
+        var icon = button.querySelector(".icon");
         var label = button.querySelector(".label");
 
         var hasStatus = button.className.match(/o(n|ff)line/gi);
@@ -175,6 +184,7 @@ const Channels = (function ChannelModule() {
         if (DOMStatus !== status) {
             swapClass(button.classList, DOMStatus, status);
             console.log(`Updated ${this.label} element status:`, this);
+            updated = true;
         }
 
         var DOMPopularity = button.dataset.popularity;
@@ -182,9 +192,16 @@ const Channels = (function ChannelModule() {
             button.dataset.popularity = this.popularity;
             label.textContent = this.popularity ? `${this.label} (${this.popularity})` : this.label;
             console.log(`Updated ${this.label} element popularity:`, this);
+            updated = true;
         }
 
-        return button;
+        if (icon.className.match("external") && this.iconExternal && icon.src != this.iconExternal) {
+            icon.src = this.iconExternal;
+            console.log(`Updated ${this.label} element icon:`, this);
+            updated = true;
+        }
+
+        return updated;
     }
 
     function deleteIconElement() {
@@ -214,7 +231,8 @@ const Channels = (function ChannelModule() {
 
     function handleIconClick() {
         console.log(`Clicked ${this.label} element:`, this);
-        Views.changeChannel(this);
+        var view = Views.getActive();
+        view.changeChannel(this);
         // if (!_views.length) setTarget(new View(target, url, this));
         // var view = _views[0];
         // console.log(_views);
@@ -244,6 +262,17 @@ const Channels = (function ChannelModule() {
         document.querySelector(".online").appendChild(div);
         this.nodes.icons.push(div);
         return this.nodes.icons;
+    }
+
+    function sortIconsByPopularity(channels) {
+        var ids = Object.keys(channels);
+        ids.sort(function(b, a) {
+            return channels[a].popularity - channels[b].popularity;
+        });
+        for (let id of ids) {
+            let icon = channels[id].nodes.icon;
+            icon.parentNode.append(icon);
+        }
     }
 
     return {

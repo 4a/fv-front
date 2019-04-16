@@ -36,7 +36,7 @@ function fetchPopular($conn) {
     if ($result->num_rows > 0) {
         while($row = $result->fetch_assoc()) {
             $site = $row['site'];
-            $channel = $row['chan'];
+            $channel = $site == "yut" ? $row['chan'] : strtolower($row['chan']);
             $popularity = (int)$row['COUNT(*)'];
             $startTime = $row['MIN(start_time)'];
             $createdTime = $row['MIN(created)'];
@@ -154,7 +154,7 @@ function updateMiscAttributes($conn, $atts, $src) {
     $sql = "UPDATE channels";
     $sql .= " SET popularity = $popularity";
     $sql .= ", online = $isOnline";
-    $sql .= $iconExternal ? ", iconExternal = '$iconExternal'" : "";
+    if (!empty($iconExternal)) $sql .= ", iconExternal = '$iconExternal'";
     $sql .= " WHERE channel = '$channel' AND src = '$src'";
 
     if ($conn->query($sql) === TRUE) {
@@ -188,7 +188,7 @@ function updateTwitchChannels($conn, $data) {
     foreach ($popularData as $site => $channel) {
         if ($site === 'twitch' || $site == "ttv") {
             foreach ($channel as $name => $arr) {
-                $popularChannels[] = $name;
+                $popularChannels[] = strtolower($name);
             }
         }
     }
@@ -253,7 +253,7 @@ function addTemporaryTwitchChannels($conn, $data) {
     foreach ($popularData as $site => $channel) {
         if ($site === 'twitch' || $site === "ttv") {
             foreach ($channel as $name => $arr) {
-                $popularTwitchChannels[] = $name;
+                $popularTwitchChannels[] = strtolower($name);
             }
         }
         if ($site === 'youtube' || $site === "yut") {
@@ -263,7 +263,7 @@ function addTemporaryTwitchChannels($conn, $data) {
         }
         if ($site === 'vaughnlive' || $site === "vtv") {
             foreach ($channel as $name => $arr) {
-                $popularVaughnliveChannels[] = $name;
+                $popularVaughnliveChannels[] = strtolower($name);
             }
         }
     }
@@ -276,7 +276,7 @@ function addTemporaryTwitchChannels($conn, $data) {
             case "youtube":
                 $youtubeChannels[] = $channel['channel'];
                 break;
-            case "youtube":
+            case "vaughnlive":
                 $vaughnliveChannels[] = $channel['channel'];
                 break;
             default:
@@ -345,7 +345,7 @@ function addTemporaryTwitchChannels($conn, $data) {
         $label = $channel;
         $isOnline = 1;
         $expires = 1;
-        $iconExternal = "https://img.youtube.com/vi/" . $channel . "/default.jpg";
+        $iconExternal = "https://img.youtube.com/vi/" . $channel . "/mqdefault.jpg";
         $popularity = $popularData['yut'][$name]['popularity'];
         $sessionStart = $popularData['yut'][$name]['timeStamp'];
         $dateCreated = $popularData['yut'][$name]['createdTime'];
@@ -391,6 +391,7 @@ function addTemporaryTwitchChannels($conn, $data) {
     if (count($channelAdditions)) addChannels($conn, $channelAdditions);
     resetUnpopularChannels($conn, "twitch", $popularTwitchChannels); // FIXME: 3rd parameter is channels to ignore, probably rename
     resetUnpopularChannels($conn, "youtube", $popularYoutubeChannels);
+    resetUnpopularChannels($conn, "vaughnlive", $popularVaughnliveChannels);
 
     return $channelAdditions;
 }
