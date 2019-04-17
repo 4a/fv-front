@@ -1,6 +1,16 @@
 <?php 
-$css = ['lib/material-icons', 'lib/hamburgers', 'style'];
-$js = ['view', 'channel', 'chat', 'config', 'app'];
+$css = [
+    // 'lib/material-icons', 
+    'lib/hamburgers', 
+    'style'
+];
+$js = [
+    'view', 
+    'channel', 
+    'chat', 
+    'config', 
+    'app'
+];
 
 function embed($type, $files) {
     switch ($type) {
@@ -31,6 +41,7 @@ function embed($type, $files) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <title>Fightan Vidya</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <?php embed('css', $css) ?>
     </head>
     <body>

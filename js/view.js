@@ -18,6 +18,50 @@ const Views = (function ViewModule() {
     const _viewPool = {};
     var _active = null;
 
+    const ø = Object.create(null);
+    const _events = {
+        init: function startEventListeners() {
+            // document.addEventListener("mouseup", _events.endResize);
+        },
+        addView: function addView() {
+            var newView = add(this);
+            handleAddClick.call(newView);
+        },
+        removeView: function removeView() {
+            this.sudoku();
+        },
+        setActive: function setActive() {
+            this.setActive();
+        },
+        startResize: function startResize(event) {
+            document.documentElement.classList.add("drag");
+            _events.activeReference = _events.captureMousePosition.bind(
+                this,
+                event.screenX,
+                event.screenY,
+                this.element.offsetWidth,
+                this.element.offsetHeight
+            );
+            document.addEventListener("mousemove", _events.activeReference);
+        },
+        endResize: function endResize(xAdjustment, yAdjustment) {
+            // this.element.style.width = xAdjustment + "px";
+            // this.element.style.height = yAdjustment + "px";
+            document.documentElement.classList.remove("drag");
+            document.removeEventListener("mousemove", _events.activeReference);
+            _events.activeReference = null;
+        },
+        captureMousePosition: function captureMousePosition(initX, initY, initWidth, initHeight, event) {
+            var xAdjustment = event.screenX - initX + initWidth;
+            var yAdjustment = event.screenY - initY + initHeight;
+            console.log(xAdjustment, yAdjustment);
+            this.element.style.width = xAdjustment + "px";
+            // this.element.style.height = yAdjustment + "px";
+            document.addEventListener("mouseup", _events.endResize.bind(this, xAdjustment, yAdjustment));
+        },
+        activeReference: null
+    };
+
     const _sources = {
         twitch: {
             getUrl: function generateTwitchURL(channel) {
@@ -67,6 +111,8 @@ const Views = (function ViewModule() {
         var view = add();
         view.createViewElement();
         view.setActive();
+
+        _events.init();
     }
 
     function getActive() {
@@ -137,23 +183,18 @@ const Views = (function ViewModule() {
         controller.className = "view-controller";
 
         var addIcon = icon("add");
-        addIcon.addEventListener("click", function() {
-            var newView = add(view);
-            handleAddClick.call(newView);
-        });
+        addIcon.addEventListener("click", _events.addView.bind(view));
 
         var removeIcon = icon("remove");
-        removeIcon.addEventListener("click", function() {
-            view.sudoku();
-        });
+        removeIcon.addEventListener("click", _events.removeView.bind(view));
 
         var starIcon = icon("star");
-        starIcon.addEventListener("click", function() {
-            view.setActive();
-        });
+        starIcon.addEventListener("click", _events.setActive.bind(view));
 
         var chatIcon = icon("chat");
         var resizeIcon = icon("resize");
+        resizeIcon.addEventListener("mousedown", _events.startResize.bind(view));
+
         controller.append(addIcon, removeIcon, starIcon, chatIcon, resizeIcon);
 
         viewElement.append(stream, controller);

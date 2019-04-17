@@ -2,6 +2,10 @@ html {
     min-height: 100%;
     user-select: none;
 }
+.drag {
+    pointer-events: none;
+    cursor: se-resize;
+}
 body {
     background: linear-gradient(#0a0138, #020107 600px);
     font: 12px Arial, sans-serif;
@@ -46,7 +50,7 @@ nav {
 }
 
 .material-icons.resize:after {
-    content: "transform";
+    content: "drag_indicator";
     cursor: se-resize;
 }
 
@@ -79,8 +83,8 @@ nav {
     grid-template-rows: auto auto;
 }
 .grid .stream-area {
-    grid-column-start: 1;
-    grid-column-end: 2;
+    /* grid-column-start: 1;
+    grid-column-end: 2; */
 }
 .grid .chat-area {
     grid-column-start: 2;
@@ -94,8 +98,9 @@ nav {
     display: block;
 }
 .stream-area {
-    display: grid;
-    grid-template-columns: auto;
+    display: block;
+    /* display: grid; */
+    /* grid-template-columns: auto; */
     /* background-color: #8f8; */
 }
 .chat-area {
@@ -128,6 +133,10 @@ nav {
     display: block;
     margin: auto;
     max-width: 750px;
+}
+.view {
+    display: inline-block;
+    width: 100%;
 }
 .stream {
     color: #fff;

@@ -47,7 +47,8 @@ const Channels = (function ChannelModule() {
      */
     async function fetchData(url) {
         var response = await fetch(url);
-        if (response.status != 200) throw `Channels.fetchData Error: ${response.status}`;
+        if (response.status != 200)
+            throw `Channels.fetchData Error: ${response.status}`;
         return response.json();
     }
 
@@ -64,7 +65,10 @@ const Channels = (function ChannelModule() {
                 Object.assign(channels[_id], data[_id]);
             } else {
                 channels[_id] = new Model(data[_id]);
-                console.log(`Created ${channels[_id].label} data:`, channels[_id]);
+                console.log(
+                    `Created ${channels[_id].label} data:`,
+                    channels[_id]
+                );
             }
         }
         return channels;
@@ -75,7 +79,10 @@ const Channels = (function ChannelModule() {
         for (let _id in channels) {
             if (!channels.hasOwnProperty(_id)) continue; // skip prototype properties
             if (!data.hasOwnProperty(_id)) {
-                console.log(`Deleting ${channels[_id].label} data:`, channels[_id]);
+                console.log(
+                    `Deleting ${channels[_id].label} data:`,
+                    channels[_id]
+                );
                 channels[_id].deleteIconElement();
                 delete channels[_id];
             }
@@ -136,7 +143,10 @@ const Channels = (function ChannelModule() {
         // button.disabled = !this.online;
 
         var icon = document.createElement("img");
-        if (window.useInternal && this.icon !== "http://fightanvidya.com/SI/IC/") {
+        if (
+            window.useInternal &&
+            this.icon !== "http://fightanvidya.com/SI/IC/"
+        ) {
             icon.src = this.icon;
             icon.classList = "icon";
         } else if (this.iconExternal) {
@@ -155,7 +165,9 @@ const Channels = (function ChannelModule() {
         var label = document.createElement("label");
         label.htmlFor = id;
         label.classList = "label";
-        label.textContent = this.popularity ? `${this.label} (${this.popularity})` : this.label;
+        label.textContent = this.popularity
+            ? `${this.label} (${this.popularity})`
+            : this.label;
 
         button.appendChild(icon);
         button.appendChild(label);
@@ -190,12 +202,18 @@ const Channels = (function ChannelModule() {
         var DOMPopularity = button.dataset.popularity;
         if (DOMPopularity != this.popularity) {
             button.dataset.popularity = this.popularity;
-            label.textContent = this.popularity ? `${this.label} (${this.popularity})` : this.label;
+            label.textContent = this.popularity
+                ? `${this.label} (${this.popularity})`
+                : this.label;
             console.log(`Updated ${this.label} element popularity:`, this);
             updated = true;
         }
 
-        if (icon.className.match("external") && this.iconExternal && icon.src != this.iconExternal) {
+        if (
+            icon.className.match("external") &&
+            this.iconExternal &&
+            icon.src != this.iconExternal
+        ) {
             icon.src = this.iconExternal;
             console.log(`Updated ${this.label} element icon:`, this);
             updated = true;
@@ -224,7 +242,8 @@ const Channels = (function ChannelModule() {
         var delegator = document.querySelector(".channel-area");
         delegator.addEventListener("click", function(event) {
             var delegate = event.target.parentNode;
-            if (!delegate.classList.contains("channel") || delegate.disabled) return;
+            if (!delegate.classList.contains("channel") || delegate.disabled)
+                return;
             handleIconClick.call(_channelPool[delegate.id]);
         });
     }
@@ -241,7 +260,8 @@ const Channels = (function ChannelModule() {
     }
 
     function createViewElement(allowDuplicates = true) {
-        if (!allowDuplicates && this.nodes.views.length) return this.nodes.views;
+        if (!allowDuplicates && this.nodes.views.length)
+            return this.nodes.views;
 
         var div = document.createElement("div");
         div.classList = "channel";
