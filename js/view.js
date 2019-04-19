@@ -29,37 +29,54 @@ const Views = (function ViewModule() {
         },
         removeView: function removeView() {
             this.sudoku();
+            highlightViewedChannels();
         },
         setActive: function setActive() {
             this.setActive();
         },
         startResize: function startResize(event) {
             document.documentElement.classList.add("drag");
-            _events.activeReference = _events.captureMousePosition.bind(
+            _events.dragReference = _events.captureMousePosition.bind(
                 this,
                 event.screenX,
                 event.screenY,
                 this.element.offsetWidth,
                 this.element.offsetHeight
             );
-            document.addEventListener("mousemove", _events.activeReference);
+            document.addEventListener("mousemove", _events.dragReference);
         },
         endResize: function endResize(xAdjustment, yAdjustment) {
             // this.element.style.width = xAdjustment + "px";
             // this.element.style.height = yAdjustment + "px";
+            console.log(event.shiftKey, this.element.parentNode.offsetWidth, xAdjustment);
+            if (event.shiftKey) {
+                console.log("1");
+                this.element.parentNode.style.width = xAdjustment + "px";
+                this.element.style.width = "";
+            } else if (this.element.parentNode.offsetWidth < xAdjustment) {
+                console.log("2");
+                this.element.parentNode.style.width = "";
+                this.element.style.width = "";
+            }
             document.documentElement.classList.remove("drag");
-            document.removeEventListener("mousemove", _events.activeReference);
-            _events.activeReference = null;
+            document.removeEventListener("mousemove", _events.dragReference);
+            _events.dragReference = null;
+            _events.endReference = null;
         },
         captureMousePosition: function captureMousePosition(initX, initY, initWidth, initHeight, event) {
+            // console.log(event);
             var xAdjustment = event.screenX - initX + initWidth;
             var yAdjustment = event.screenY - initY + initHeight;
-            console.log(xAdjustment, yAdjustment);
-            this.element.style.width = xAdjustment + "px";
+            var xRatio = (xAdjustment / this.element.parentNode.offsetWidth) * 100;
+            this.element.style.width = xRatio < 100 || event.shiftKey ? xRatio + "%" : "";
             // this.element.style.height = yAdjustment + "px";
-            document.addEventListener("mouseup", _events.endResize.bind(this, xAdjustment, yAdjustment));
+            if (!_events.endReference) {
+                _events.endReference = _events.endResize.bind(this, xAdjustment, yAdjustment);
+                document.addEventListener("mouseup", _events.endReference);
+            }
         },
-        activeReference: null
+        dragReference: null,
+        endReference: null
     };
 
     const _sources = {
@@ -253,7 +270,10 @@ const Views = (function ViewModule() {
     }
 
     function sudoku() {
-        if (Object.keys(_viewPool).length < 2) throw "Should we delete the last element??";
+        if (Object.keys(_viewPool).length < 2) {
+            this.changeChannel({ src: "any", channel: "" });
+            throw "Should we delete the last element??";
+        }
         switch (this.type) {
             case "DOM":
                 removeElementFromDOM.call(this);
