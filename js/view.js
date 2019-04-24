@@ -6,6 +6,7 @@ const Views = (function ViewModule() {
         this.playerAPI = null;
         this.element = null;
         this.history = [];
+        this.chat = null;
     };
 
     Model.prototype = {
@@ -20,8 +21,9 @@ const Views = (function ViewModule() {
 
     const ø = Object.create(null);
     const _events = {
+        // FIXME: feels dumb
         init: function startEventListeners() {
-            // document.addEventListener("mouseup", _events.endResize);
+            document.addEventListener("mouseup", _events.endResize);
         },
         addView: function addView() {
             var newView = add(this);
@@ -34,8 +36,37 @@ const Views = (function ViewModule() {
         setActive: function setActive() {
             this.setActive();
         },
+        toggleChat: function toggleChat() {
+            console.log(this.element.parentNode);
+            if (this.element.className.match("chatting")) _events.internalChat.call(this);
+            else {
+                var chats = document.querySelectorAll(".view.chatting");
+                for (let chat of chats) {
+                    chat.classList.remove("chatting");
+                }
+                _events.externalChat.call(this);
+            }
+        },
+        internalChat: function internalChat() {
+            var target = document.querySelector(".chat-area");
+            var chat = new Chatango(target);
+            this.chat = null;
+            this.element.classList.remove("chatting");
+            chat.asyncLoad();
+        },
+        externalChat: function externalChat() {
+            var target = document.querySelector(".chat-area");
+            var chat = new TwitchChat(target, this.data.channel);
+            this.chat = chat;
+            this.element.classList.add("chatting");
+            chat.asyncLoad();
+        },
         startResize: function startResize(event) {
             document.documentElement.classList.add("drag");
+            var locked = document.getElementsByClassName("resize-lock");
+            for (let lock of locked) {
+                lock.style.height = lock.offsetHeight + "px";
+            }
             _events.dragReference = _events.captureMousePosition.bind(
                 this,
                 event.screenX,
@@ -45,38 +76,22 @@ const Views = (function ViewModule() {
             );
             document.addEventListener("mousemove", _events.dragReference);
         },
-        endResize: function endResize(xAdjustment, yAdjustment) {
-            // this.element.style.width = xAdjustment + "px";
-            // this.element.style.height = yAdjustment + "px";
-            console.log(event.shiftKey, this.element.parentNode.offsetWidth, xAdjustment);
-            if (event.shiftKey) {
-                console.log("1");
-                this.element.parentNode.style.width = xAdjustment + "px";
-                this.element.style.width = "";
-            } else if (this.element.parentNode.offsetWidth < xAdjustment) {
-                console.log("2");
-                this.element.parentNode.style.width = "";
-                this.element.style.width = "";
-            }
+        endResize: function endResize() {
             document.documentElement.classList.remove("drag");
+            var locked = document.getElementsByClassName("resize-lock");
+            for (let lock of locked) {
+                lock.style.height = "";
+            }
             document.removeEventListener("mousemove", _events.dragReference);
             _events.dragReference = null;
-            _events.endReference = null;
         },
         captureMousePosition: function captureMousePosition(initX, initY, initWidth, initHeight, event) {
-            // console.log(event);
             var xAdjustment = event.screenX - initX + initWidth;
             var yAdjustment = event.screenY - initY + initHeight;
             var xRatio = (xAdjustment / this.element.parentNode.offsetWidth) * 100;
-            this.element.style.width = xRatio < 100 || event.shiftKey ? xRatio + "%" : "";
-            // this.element.style.height = yAdjustment + "px";
-            if (!_events.endReference) {
-                _events.endReference = _events.endResize.bind(this, xAdjustment, yAdjustment);
-                document.addEventListener("mouseup", _events.endReference);
-            }
+            this.element.style.width = xRatio < 100 ? xRatio + "%" : "";
         },
-        dragReference: null,
-        endReference: null
+        dragReference: null
     };
 
     const _sources = {
@@ -171,6 +186,10 @@ const Views = (function ViewModule() {
                 console.log("hey");
         }
         highlightViewedChannels();
+        if (this.chat) {
+            this.chat.room = this.data.channel;
+            this.chat.asyncLoad();
+        }
     }
 
     function add(template) {
@@ -209,6 +228,8 @@ const Views = (function ViewModule() {
         starIcon.addEventListener("click", _events.setActive.bind(view));
 
         var chatIcon = icon("chat");
+        chatIcon.addEventListener("click", _events.toggleChat.bind(view));
+
         var resizeIcon = icon("resize");
         resizeIcon.addEventListener("mousedown", _events.startResize.bind(view));
 
@@ -265,7 +286,8 @@ const Views = (function ViewModule() {
         for (let key of views) {
             let view = _viewPool[key];
             let id = "FV_" + view.data._id;
-            document.getElementById(id).classList.add("active");
+            let element = document.getElementById(id);
+            if (element) element.classList.add("active");
         }
     }
 

@@ -78,13 +78,19 @@ function embed($type, $files) {
                         </div>
                     </div> -->
                 </section>
-                <section class="chat-area">
+                <section class="chat-area resize-lock">
                     <div class="placeholder"></div>
                 </section>
             </section>
             <section class="controllers default">
                 <section class="waifu-box">
-                    neo waifu box
+                    <button data-src="twitch" type="button"><img src="http://fightanvidya.com/IS/jtv.png" alt="twitch"></button>
+                    <button data-src="livestream"><img src="http://fightanvidya.com/IS/lst.png" alt="livestream"></button>
+                    <button data-src="youtube"><img src="http://fightanvidya.com/IS/yut.png" alt="youtube"></button>
+                    <button data-src="nicovideo"><img src="http://fightanvidya.com/IS/nnd.png" alt="nicovideo"></button>
+                    <button data-src="vaughnlive"><img src="http://fightanvidya.com/IS/vtv.png" alt="vaughnlive"></button>
+                    <button data-src="any"><img src="http://fightanvidya.com/IS/any.png" alt="any"></button>
+                    <input type="search" placeholder="No Waifus Allowed">
                 </section>
                 <section class="channel-area">
                     <section class="online">

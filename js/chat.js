@@ -1,7 +1,5 @@
 function Chatango(element, room, styles) {
-    if (!element) {
-        return console.error("Chatango embed target has not been set!");
-    }
+    if (!element) throw "Chatango embed target has not been set!";
 
     const settingsTemplate = `{
         "handle":"fvumfe",
@@ -91,3 +89,29 @@ Chatango.prototype.startKeyLogger = (function() {
 
     return captureTyping;
 })();
+
+function TwitchChat(element, room, styles) {
+    if (!element) throw "Twitch chat embed target has not been set!";
+
+    this.target = element;
+    this.room = room;
+    this.styles = styles || "darkpopout";
+
+    function getHeight() {
+        var streamArea = document.querySelector(".stream-area");
+        var streams = document.querySelectorAll(".stream");
+        var lastStream = streams[streams.length - 1];
+        var offset = streamArea.getBoundingClientRect().bottom - lastStream.getBoundingClientRect().bottom;
+        return `calc(100% - ${offset}px)`;
+    }
+
+    this.asyncLoad = function() {
+        var iframe = document.createElement("iframe");
+        iframe.src = `https://www.twitch.tv/embed/${this.room}/chat?${this.styles}`;
+        iframe.style.height = getHeight();
+        iframe.style.width = "100%";
+        iframe.style.border = "0";
+        this.target.textContent = "";
+        this.target.appendChild(iframe);
+    };
+}

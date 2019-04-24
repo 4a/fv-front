@@ -45,19 +45,23 @@ nav {
 }
 
 .material-icons.chat:after {
+    content: "chat_bubble_outline";
+    cursor: pointer;
+}
+.chatting .material-icons.chat:after {
     content: "chat_bubble";
     cursor: pointer;
 }
 
 .material-icons.resize:after {
-    content: "drag_indicator";
+    content: "transform";
     cursor: se-resize;
 }
 
 .view-controller {
     display: grid;
     margin-top: 0.5em;
-    grid-template-columns: 5% 5% 80% 5% 5%;
+    grid-template-columns: 3em 3em auto 3em 3em;
     text-align: center;
 }
 .view-controller * {
@@ -68,6 +72,32 @@ nav {
 .view-controller *:hover {
     opacity: 1;
     transition: opacity 0s ease-in;
+}
+
+.waifu-box button {
+    border: 0;
+    padding: 0;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.waifu-box button * {
+    display: block;
+}
+
+.waifu-box input {
+    position: relative;
+    vertical-align: top;
+    top: 1px;
+    height: 23px;
+    width: 190px;
+    transition: width 300ms;
+    transition-delay: 300ms;
+}
+
+.waifu-box input:focus {
+    width: 265px;
+    transition-delay: 0ms;
 }
 
 .grid {
@@ -314,7 +344,8 @@ footer {
     display: none;
 }
 
-@media screen and (max-width: 800px) {
+/* @media screen and (max-width: 800px) { */
+@media (orientation: portrait) {
     header,
     nav.submenu,
     footer,

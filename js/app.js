@@ -8,6 +8,8 @@
     var chat = new Chatango(document.querySelector(".chat-area"));
     chat.asyncLoad();
 
+    var waifuBox = new WaifuBox(document.querySelector(".waifu-box"));
+
     Config.init(document.querySelector(".config"));
 
     var mobileLogo = document.querySelector(".mobile-logo");

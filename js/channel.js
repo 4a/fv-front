@@ -1,6 +1,16 @@
 const Channels = (function ChannelModule() {
-    const Model = function Channel(obj) {
+    const Model = function Channel(obj, id) {
+        this.channel = obj.channel;
+        this.icon = null;
+        this.iconExternal = null;
+        this.label = obj.channel;
+        this.lastUpdate = Date.now();
         this.nodes = { icon: null, views: [] };
+        this.online = false;
+        this.popularity = 0;
+        this.priority = 0;
+        this.src = obj.src;
+        this._id = id;
         return Object.assign(this, obj);
     };
 
@@ -12,7 +22,7 @@ const Channels = (function ChannelModule() {
     };
 
     const _channelPool = {};
-
+    const _lookup = {};
     /**
      * @affects DOM, _channelPool
      */
@@ -47,8 +57,7 @@ const Channels = (function ChannelModule() {
      */
     async function fetchData(url) {
         var response = await fetch(url);
-        if (response.status != 200)
-            throw `Channels.fetchData Error: ${response.status}`;
+        if (response.status != 200) throw `Channels.fetchData Error: ${response.status}`;
         return response.json();
     }
 
@@ -64,30 +73,53 @@ const Channels = (function ChannelModule() {
             if (channels.hasOwnProperty(_id)) {
                 Object.assign(channels[_id], data[_id]);
             } else {
-                channels[_id] = new Model(data[_id]);
-                console.log(
-                    `Created ${channels[_id].label} data:`,
-                    channels[_id]
-                );
+                var source = new Model(data[_id]);
+                addData(_id, source);
             }
         }
         return channels;
     }
 
+    function addData(id, data) {
+        var channels = _channelPool;
+        channels[id] = data;
+        addLookupEntry(channels[id]);
+        console.log(`Created ${channels[id].label} data:`, channels[id]);
+    }
+
+    function addLookupEntry(data) {
+        if (!_lookup.hasOwnProperty(data.src)) _lookup[data.src] = {};
+        _lookup[data.src][data.channel] = "FV_" + data._id;
+    }
+
     function deleteExpiredData(data) {
         var channels = _channelPool;
         for (let _id in channels) {
+            if (_id[0] == "c") continue; // skip custom input channels
             if (!channels.hasOwnProperty(_id)) continue; // skip prototype properties
             if (!data.hasOwnProperty(_id)) {
-                console.log(
-                    `Deleting ${channels[_id].label} data:`,
-                    channels[_id]
-                );
+                console.log(`Deleting ${channels[_id].label} data:`, channels[_id]);
                 channels[_id].deleteIconElement();
                 delete channels[_id];
             }
         }
         return channels;
+    }
+
+    function inputChannel(src, channel) {
+        if (_lookup[src] && _lookup[src][channel]) {
+            var id = _lookup[src][channel];
+            var data = _channelPool[id];
+        } else {
+            var id = "c" + Date.now();
+            var source = {};
+            source[id] = { src, channel };
+            var data = new Model(source[id], id);
+            console.log(id, data);
+            addData("FV_" + id, data);
+        }
+        var view = Views.getActive();
+        view.changeChannel(data);
     }
 
     /**
@@ -143,10 +175,7 @@ const Channels = (function ChannelModule() {
         // button.disabled = !this.online;
 
         var icon = document.createElement("img");
-        if (
-            window.useInternal &&
-            this.icon !== "http://fightanvidya.com/SI/IC/"
-        ) {
+        if (window.useInternal && this.icon !== "http://fightanvidya.com/SI/IC/") {
             icon.src = this.icon;
             icon.classList = "icon";
         } else if (this.iconExternal) {
@@ -165,9 +194,7 @@ const Channels = (function ChannelModule() {
         var label = document.createElement("label");
         label.htmlFor = id;
         label.classList = "label";
-        label.textContent = this.popularity
-            ? `${this.label} (${this.popularity})`
-            : this.label;
+        label.textContent = this.popularity ? `${this.label} (${this.popularity})` : this.label;
 
         button.appendChild(icon);
         button.appendChild(label);
@@ -202,18 +229,12 @@ const Channels = (function ChannelModule() {
         var DOMPopularity = button.dataset.popularity;
         if (DOMPopularity != this.popularity) {
             button.dataset.popularity = this.popularity;
-            label.textContent = this.popularity
-                ? `${this.label} (${this.popularity})`
-                : this.label;
+            label.textContent = this.popularity ? `${this.label} (${this.popularity})` : this.label;
             console.log(`Updated ${this.label} element popularity:`, this);
             updated = true;
         }
 
-        if (
-            icon.className.match("external") &&
-            this.iconExternal &&
-            icon.src != this.iconExternal
-        ) {
+        if (icon.className.match("external") && this.iconExternal && icon.src != this.iconExternal) {
             icon.src = this.iconExternal;
             console.log(`Updated ${this.label} element icon:`, this);
             updated = true;
@@ -242,8 +263,7 @@ const Channels = (function ChannelModule() {
         var delegator = document.querySelector(".channel-area");
         delegator.addEventListener("click", function(event) {
             var delegate = event.target.parentNode;
-            if (!delegate.classList.contains("channel") || delegate.disabled)
-                return;
+            if (!delegate.classList.contains("channel") || delegate.disabled) return;
             handleIconClick.call(_channelPool[delegate.id]);
         });
     }
@@ -260,8 +280,7 @@ const Channels = (function ChannelModule() {
     }
 
     function createViewElement(allowDuplicates = true) {
-        if (!allowDuplicates && this.nodes.views.length)
-            return this.nodes.views;
+        if (!allowDuplicates && this.nodes.views.length) return this.nodes.views;
 
         var div = document.createElement("div");
         div.classList = "channel";
@@ -297,6 +316,33 @@ const Channels = (function ChannelModule() {
 
     return {
         init,
-        _channelPool
+        _channelPool,
+        _lookup,
+        inputChannel
     };
 })();
+
+function WaifuBox(element) {
+    this.element = element;
+    this.src = "twitch";
+    var buttons = element.querySelectorAll("button");
+    var input = element.querySelector("input");
+    for (let button of buttons) {
+        button.addEventListener("click", this.handleClick.bind(this, button, input));
+    }
+    input.addEventListener("keyup", this.submitInput.bind(this, input));
+}
+
+WaifuBox.prototype.handleClick = function(button, input, event) {
+    var src = button.dataset.src;
+    var channel = input.value;
+    Channels.inputChannel(src, channel);
+    this.src = src;
+};
+
+WaifuBox.prototype.submitInput = function(input, event) {
+    if (event.key != "Enter") return;
+    var src = this.src;
+    var channel = input.value;
+    Channels.inputChannel(src, channel);
+};
