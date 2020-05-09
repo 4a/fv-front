@@ -6,12 +6,10 @@ const mapDispatchToProps = dispatch => ({
     setChannel: data => dispatch(setChannel(data))
 });
 
-// FIXME: Use TypeScript
-
 export class _UserInput extends Component {
     constructor(props) {
         super(props);
-        this.state = { src: "twitch", channel: "" };
+        this.state = { host: "twitch", embed_id: "" };
 
         // Bind event callbacks
         this.handleClick = this.handleClick.bind(this);
@@ -20,13 +18,13 @@ export class _UserInput extends Component {
     }
 
     handleClick(event) {
-        const src = event.target.alt;
-        this.setState(λ => ({ src }), this.changeChannel);
+        const host = event.target.alt;
+        this.setState(λ => ({ host }), this.changeChannel);
     }
 
     handleChange(event) {
-        const channel = event.target.value;
-        this.setState(λ => ({ channel }));
+        const embed_id = event.target.value;
+        this.setState(λ => ({ embed_id }));
     }
 
     handleKeyPress(event) {
@@ -40,29 +38,29 @@ export class _UserInput extends Component {
     }
 
     changeChannel() {
-        const { src, channel } = this.state;
-        this.props.setChannel({ src, channel });
+        const { host, embed_id } = this.state;
+        this.props.setChannel({ host, embed_id });
     }
 
     render() {
         return (
             <section className="waifu-box">
-                <button data-src="twitch" type="button" className={this.state.src === "twitch" ? "active" : ""}>
+                <button data-host="twitch" type="button" className={this.state.host === "twitch" ? "active" : ""}>
                     <img src="http://fightanvidya.com/IS/jtv.png" alt="twitch" onClick={this.handleClick} />
                 </button>
-                <button data-src="livestream" type="button" className={this.state.src === "livestream" ? "active" : ""}>
+                <button data-host="livestream" type="button" className={this.state.host === "livestream" ? "active" : ""}>
                     <img src="http://fightanvidya.com/IS/lst.png" alt="livestream" onClick={this.handleClick} />
                 </button>
-                <button data-src="youtube" type="button" className={this.state.src === "youtube" ? "active" : ""}>
+                <button data-host="youtube" type="button" className={this.state.host === "youtube" ? "active" : ""}>
                     <img src="http://fightanvidya.com/IS/yut.png" alt="youtube" onClick={this.handleClick} />
                 </button>
-                <button data-src="nicovideo" type="button" className={this.state.src === "nicovideo" ? "active" : ""}>
+                <button data-host="nicovideo" type="button" className={this.state.host === "nicovideo" ? "active" : ""}>
                     <img src="http://fightanvidya.com/IS/nnd.png" alt="nicovideo" onClick={this.handleClick} />
                 </button>
-                <button data-src="vaughnlive" type="button" className={this.state.src === "vaughnlive" ? "active" : ""}>
+                <button data-host="vaughnlive" type="button" className={this.state.host === "vaughnlive" ? "active" : ""}>
                     <img src="http://fightanvidya.com/IS/vtv.png" alt="vaughnlive" onClick={this.handleClick} />
                 </button>
-                <button data-src="any" type="button" className={this.state.src === "any" ? "active" : ""}>
+                <button data-host="any" type="button" className={this.state.host === "any" ? "active" : ""}>
                     <img src="http://fightanvidya.com/IS/any.png" alt="any" onClick={this.handleClick} />
                 </button>
                 <input

@@ -2,8 +2,8 @@ const defaultState = {
     active: "default",
     list: {
         default: {
-            src: "any",
-            channel: "",
+            host: "any",
+            embed_id: "https://player.angelthump.com/?channel=fuckaudioslave",
             sessionStart: 0
         }
     }

@@ -46,7 +46,7 @@ class _IconList_ extends Component {
         const activeChannels = {};
         for (let key in views) {
             const view = views[key];
-            activeChannels[`${view.src}_${view.channel}`] = true;
+            activeChannels[`${view.host}_${view.embed_id}`] = true;
         }
         return activeChannels;
     }
@@ -57,7 +57,7 @@ class _IconList_ extends Component {
         const icons = [];
         for (const id in channels) {
             const channel = channels[id];
-            const isActive = activeChannels[`${channel.src}_${channel.channel}`] || false;
+            const isActive = activeChannels[`${channel.host}_${channel.embed_id}`] || false;
             const icon = <Icon key={id} data={channel} active={isActive} />;
             icons.push(icon);
         }

@@ -20,7 +20,11 @@ class _ViewControls extends Component {
     }
 
     add() {
-        this.props.add({ src: this.props.src, channel: this.props.channel });
+        this.props.add({ 
+            host: this.props.host, 
+            embed_id: this.props.embed_id, 
+            width: this.props.size.width
+        });
     }
 
     remove() {
