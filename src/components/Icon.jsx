@@ -21,11 +21,8 @@ export class _Icon extends Component {
         this.props.setChannel(this.props.data);
     }
 
-    getImage(data) {
-        const { icon, iconExternal } = data;
-        const notFound = icon === "http://fightanvidya.com/SI/IC/";
-        const iconDefault = "http://fightanvidya.com/SI/IC/twitch.png";
-        return notFound ? iconExternal || iconDefault : icon;
+    getImage(data) { // TODO: custom icon support
+        return (true || data.display.use_custom_icon) ? `http://fightanvidya.com/SI/IC/${data.display.custom_icon}` : data.display.icon;
     }
 
     getBorder(channel) {
@@ -37,23 +34,23 @@ export class _Icon extends Component {
     render() {
         const data = this.props.data;
         const image = this.getImage(data);
-        const url = sourceMap[data.src].getUrl(data.channel);
-        const status = data.online ? "online" : "offline";
+        const url = sourceMap[data.host] && sourceMap[data.host].getUrl(data.embed_id) || "test";
+        const status = data.live ? "online" : "offline";
         const active = this.props.active ? "active" : "";
-        const label = data.popularity ? `${data.label} (${data.popularity})` : data.label;
-        const { highlight, shadow } = this.getBorder(data.channel);
+        const label = data.statistics.popularity ? `${data.display.label} (${data.statistics.popularity})` : data.display.label;
+        const { highlight, shadow } = this.getBorder(data.embed_id);
         return (
             <a
                 href={url}
                 id={`FV_${data._id}`}
                 className={`channel ${status} ${active}`}
-                data-popularity={data.popularity}
+                data-popularity={data.statistics.popularity}
                 onClick={this.handleClick}
             >
                 <img
                     className="icon"
                     src={image}
-                    alt={data.channel}
+                    alt={data.embed_id}
                     style={{ borderColor: `${highlight} ${highlight} ${shadow} ${shadow}` }}
                 />
                 <span className="label">{label}</span>

@@ -16,7 +16,7 @@ class App extends Component {
         super(props);
         this.state = {
             channels: {},
-            views: []
+            // views: []
         };
         this.counter = 0;
     }
@@ -30,7 +30,8 @@ class App extends Component {
     }
 
     async fetchChannels() {
-        const data = await fetch("http://fightanvidya.com/4a4a/2019/api/channels").then(res => res.json());
+        // const data = await fetch("http://fightanvidya.com/4a4a/2019/api/channels").then(res => res.json());
+        const data = await fetch("http://localhost:8000/api/channels/").then(res => res.json());
         console.log(this.counter++);
         this.setState({ channels: data });
         return data;
