@@ -32,8 +32,7 @@ class App extends Component {
     }
 
     async fetchChannels() {
-        // const data = await fetch("http://fightanvidya.com/4a4a/2019/api/channels").then(res => res.json());
-        const data = await fetch("http://127.0.0.1:8000/api/channels/").then(res => res.json());
+        const data = await fetch(`${process.env.API_URL}channels`).then(res => res.json());
         console.log(this.counter++);
         this.updateChannels(data);
     }
