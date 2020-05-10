@@ -3,7 +3,7 @@ const defaultState = {
     list: {
         default: {
             host: "any",
-            embed_id: "https://player.angelthump.com/?channel=fuckaudioslave",
+            embed_id: "",
             sessionStart: 0
         }
     }

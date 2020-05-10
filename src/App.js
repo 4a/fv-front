@@ -19,6 +19,8 @@ class App extends Component {
             // views: []
         };
         this.counter = 0;
+
+        this.updateChannels = this.updateChannels.bind(this);
     }
 
     fetchChannelsLoop(interval) {
@@ -31,10 +33,13 @@ class App extends Component {
 
     async fetchChannels() {
         // const data = await fetch("http://fightanvidya.com/4a4a/2019/api/channels").then(res => res.json());
-        const data = await fetch("http://localhost:8000/api/channels/").then(res => res.json());
+        const data = await fetch("http://127.0.0.1:8000/api/channels/").then(res => res.json());
         console.log(this.counter++);
+        this.updateChannels(data);
+    }
+
+    updateChannels(data) {
         this.setState({ channels: data });
-        return data;
     }
 
     componentDidMount() {
@@ -57,7 +62,7 @@ class App extends Component {
                             alt="Fightan Vidya"
                         />
                     </section>
-                    <ViewList />
+                    <ViewList updateChannels={this.updateChannels} />
                     <div className="chat-area">
                         <Chat />
                     </div>

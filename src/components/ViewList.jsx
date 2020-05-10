@@ -9,7 +9,6 @@ class _ViewList extends Component {
     constructor(props) {
         super(props);
         this.element = createRef();
-        this.counter = 0;
 
         // Bind event callbacks
         this.getPixelWidth = this.getPixelWidth.bind(this);
@@ -17,18 +16,25 @@ class _ViewList extends Component {
     }
 
     async trackViews() {
-        // const data = await fetch("http://fightanvidya.com/4a4a/2019/api/channels").then(res => res.json());
-        const data = [];
+        const payload = {
+            views: []
+        };
         for (let key in this.props.views) {
             const view = this.props.views[key];
-            data.push({
+            payload.views.push({
                 host: view.host,
                 embed_id: view.embed_id
             });
         }
-        console.log('trackViews', data);
-        console.log('trackViews count', this.counter++);
-        return data;
+        const data = await fetch("http://127.0.0.1:8000/api/channels/trackViewer", {
+            method: 'POST',
+            body: JSON.stringify(payload),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then(res => res.json());
+        this.props.updateChannels(data);
     }
 
     getPixelWidth() {

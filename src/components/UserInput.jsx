@@ -19,12 +19,12 @@ export class _UserInput extends Component {
 
     handleClick(event) {
         const host = event.target.alt;
-        this.setState(λ => ({ host }), this.changeChannel);
+        this.setState(x => ({ host }), this.changeChannel);
     }
 
     handleChange(event) {
         const embed_id = event.target.value;
-        this.setState(λ => ({ embed_id }));
+        this.setState(x => ({ embed_id }));
     }
 
     handleKeyPress(event) {

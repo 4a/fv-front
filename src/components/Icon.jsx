@@ -37,14 +37,15 @@ export class _Icon extends Component {
         const url = sourceMap[data.host] && sourceMap[data.host].getUrl(data.embed_id) || "test";
         const status = data.live ? "online" : "offline";
         const active = this.props.active ? "active" : "";
-        const label = data.statistics.popularity ? `${data.display.label} (${data.statistics.popularity})` : data.display.label;
+        const popularity = Object.keys(data.viewers).length;
+        const label = popularity ? `${data.display.label} (${popularity})` : data.display.label;
         const { highlight, shadow } = this.getBorder(data.embed_id);
         return (
             <a
                 href={url}
                 id={`FV_${data._id}`}
                 className={`channel ${status} ${active}`}
-                data-popularity={data.statistics.popularity}
+                data-popularity={popularity}
                 onClick={this.handleClick}
             >
                 <img
