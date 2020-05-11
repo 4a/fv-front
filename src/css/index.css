@@ -183,7 +183,8 @@ nav {
     /* overflow: hidden; */
     /* resize: horizontal; */
 }
-[style*="--aspect-ratio"] {
+/* Moved to inline index.html */
+/* [style*="--aspect-ratio"] {
     position: relative;
 }
 [style^="--aspect-ratio"]::before {
@@ -191,8 +192,8 @@ nav {
     display: block;
     width: 1px;
     height: 0;
-    padding-bottom: calc(100% / (var(--aspect-ratio)));
-}
+    padding-bottom: calc(100% / (var(--aspect-ratio))) !important;
+} */
 .stream iframe,
 .player {
     position: absolute;

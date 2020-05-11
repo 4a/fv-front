@@ -23,6 +23,19 @@
     -->
         <script src="https://player.twitch.tv/js/embed/v1.js"></script>
         <title>React App</title>
+        <style> 
+          /* Required here so webpack doesn't break this weird css*/
+          [style*="--aspect-ratio"] {
+              position: relative;
+          }
+          [style^="--aspect-ratio"]::before {
+              content: "";
+              display: block;
+              width: 1px;
+              height: 0;
+              padding-bottom: calc(100% / (var(--aspect-ratio))) !important;
+          }
+        </style>
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
