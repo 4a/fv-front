@@ -22,7 +22,7 @@ export class _Icon extends Component {
     }
 
     getImage(data) { // TODO: custom icon support
-        return (true || data.display.use_custom_icon) ? `http://fightanvidya.com/SI/IC/${data.display.custom_icon}` : data.display.icon;
+        return (true || data.display.use_custom_icon) ? `${process.env.REACT_APP_MEDIA_PATH}SI/IC/${data.display.custom_icon}` : data.display.icon;
     }
 
     getBorder(channel) {
@@ -39,6 +39,7 @@ export class _Icon extends Component {
         const active = this.props.active ? "active" : "";
         const popularity = Object.keys(data.viewers).length;
         const label = popularity ? `${data.display.label} (${popularity})` : data.display.label;
+        const borderClass = data.display.use_border ? "border" : "borderless";
         const { highlight, shadow } = this.getBorder(data.embed_id);
         return (
             <a
@@ -49,7 +50,7 @@ export class _Icon extends Component {
                 onClick={this.handleClick}
             >
                 <img
-                    className="icon"
+                    className={`icon ${borderClass}`}
                     src={image}
                     alt={data.embed_id}
                     style={{ borderColor: `${highlight} ${highlight} ${shadow} ${shadow}` }}

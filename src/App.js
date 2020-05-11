@@ -32,7 +32,7 @@ class App extends Component {
     }
 
     async fetchChannels() {
-        const data = await fetch(`${process.env.API_URL}channels`).then(res => res.json());
+        const data = await fetch(`${process.env.REACT_APP_API_URL}channels`).then(res => res.json());
         console.log(this.counter++);
         this.updateChannels(data);
     }

@@ -46,22 +46,22 @@ export class _UserInput extends Component {
         return (
             <section className="waifu-box">
                 <button data-host="twitch" type="button" className={this.state.host === "twitch" ? "active" : ""}>
-                    <img src="http://fightanvidya.com/IS/jtv.png" alt="twitch" onClick={this.handleClick} />
+                    <img src={`${process.env.REACT_APP_MEDIA_PATH}IS/jtv.png`} alt="twitch" onClick={this.handleClick} />
                 </button>
                 <button data-host="livestream" type="button" className={this.state.host === "livestream" ? "active" : ""}>
-                    <img src="http://fightanvidya.com/IS/lst.png" alt="livestream" onClick={this.handleClick} />
+                    <img src={`${process.env.REACT_APP_MEDIA_PATH}IS/lst.png`} alt="livestream" onClick={this.handleClick} />
                 </button>
                 <button data-host="youtube" type="button" className={this.state.host === "youtube" ? "active" : ""}>
-                    <img src="http://fightanvidya.com/IS/yut.png" alt="youtube" onClick={this.handleClick} />
+                    <img src={`${process.env.REACT_APP_MEDIA_PATH}IS/yut.png`} alt="youtube" onClick={this.handleClick} />
                 </button>
                 <button data-host="nicovideo" type="button" className={this.state.host === "nicovideo" ? "active" : ""}>
-                    <img src="http://fightanvidya.com/IS/nnd.png" alt="nicovideo" onClick={this.handleClick} />
+                    <img src={`${process.env.REACT_APP_MEDIA_PATH}IS/nnd.png`} alt="nicovideo" onClick={this.handleClick} />
                 </button>
                 <button data-host="vaughnlive" type="button" className={this.state.host === "vaughnlive" ? "active" : ""}>
-                    <img src="http://fightanvidya.com/IS/vtv.png" alt="vaughnlive" onClick={this.handleClick} />
+                    <img src={`${process.env.REACT_APP_MEDIA_PATH}IS/vtv.png`} alt="vaughnlive" onClick={this.handleClick} />
                 </button>
                 <button data-host="any" type="button" className={this.state.host === "any" ? "active" : ""}>
-                    <img src="http://fightanvidya.com/IS/any.png" alt="any" onClick={this.handleClick} />
+                    <img src={`${process.env.REACT_APP_MEDIA_PATH}IS/any.png`} alt="any" onClick={this.handleClick} />
                 </button>
                 <input
                     type="search"

@@ -297,7 +297,7 @@ nav {
     opacity: 0.25;
     transition: opacity 250ms ease-in;
 }
-.channel .icon:not([src*="fightanvidya.com"]) {
+.channel .icon.border {
     height: 46px;
     width: 46px;
     border: 2px solid #777;

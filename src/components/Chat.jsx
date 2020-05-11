@@ -4,7 +4,7 @@ export class Chat extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            iframe: "http://fightanvidya.com/embed/fvchat"
+            iframe: `${process.env.REACT_APP_EMBED_PATH}fvchat.php`
         };
     }
 
