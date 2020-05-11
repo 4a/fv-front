@@ -26,7 +26,7 @@ class _ViewList extends Component {
                 embed_id: view.embed_id
             });
         }
-        const data = await fetch("http://127.0.0.1:8000/api/channels/trackViewer", {
+        const data = await fetch(`${process.env.REACT_APP_API_URL}channels/trackViewer`, {
             method: 'POST',
             body: JSON.stringify(payload),
             headers: {
