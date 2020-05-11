@@ -42,7 +42,7 @@ class App extends Component {
     }
 
     componentDidMount() {
-        this.fetchChannelsLoop(120000);
+        this.fetchChannelsLoop(30000);
     }
 
     componentDidUpdate() {
