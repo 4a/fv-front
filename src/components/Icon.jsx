@@ -21,8 +21,20 @@ export class _Icon extends Component {
         this.props.setChannel(this.props.data);
     }
 
-    getImage(data) { // TODO: custom icon support
-        return (true || data.display.use_custom_icon) ? `${process.env.REACT_APP_MEDIA_PATH}SI/IC/${data.display.custom_icon}` : data.display.icon;
+    getImage(data) { // TODO: make less retarded
+        const noImage = {
+            twitch: 'jtv',
+            ustream: 'ust',
+            livestream: 'lst',
+            youtube: 'yut',
+            niconico: 'nnd',
+            vaughnlive: 'vtv',
+            any: 'any'
+        };
+        return (data.display.use_custom_icon) 
+        ? `${process.env.REACT_APP_MEDIA_PATH}SI/IC/${data.display.custom_icon}` 
+        : data.display.icon
+        || `${process.env.REACT_APP_MEDIA_PATH}IS/${noImage[data.host]}.png`;
     }
 
     getBorder(channel) {
