@@ -57,7 +57,7 @@ class App extends Component {
                     <section className="mobile-header">
                         <img
                             className="mobile-logo"
-                            src="http://fightanvidya.com/IS/mob_logo.png"
+                            src={`${process.env.REACT_APP_MEDIA_PATH}IS/mob_logo.png`}
                             alt="Fightan Vidya"
                         />
                     </section>
