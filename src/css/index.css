@@ -17,6 +17,17 @@ header {
 nav {
     text-align: center;
 }
+.pseudo-link {
+    padding: 0.5em;
+    color: #09f;
+    font-weight: bold; 
+    cursor: pointer;
+}
+
+.pseudo-link:hover {
+    color: #fff;
+}
+
 .material-icons {
     display: inline-block;
     color: #09f;

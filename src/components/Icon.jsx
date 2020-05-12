@@ -34,7 +34,7 @@ export class _Icon extends Component {
         return (data.display.use_custom_icon) 
         ? `${process.env.REACT_APP_MEDIA_PATH}SI/IC/${data.display.custom_icon}` 
         : data.display.icon
-        || `${process.env.REACT_APP_MEDIA_PATH}IS/${noImage[data.host]}.png`;
+        || `${process.env.REACT_APP_MEDIA_PATH}IS/${noImage[data.host]}2x.png`;
     }
 
     getBorder(channel) {

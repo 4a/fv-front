@@ -21,9 +21,9 @@ export const Header = () => {
                 </a>
             </nav>
             <div style={{padding: "1em"}}>
-                <span style={{padding: "0.5em", color: "#09f", "font-weight": "bold", cursor: "pointer"}} onClick={fitToWidth} >Fit To Width</span>
+                <span className="pseudo-link" onClick={fitToWidth} >Fit To Width</span>
                 /
-                <span style={{padding: "0.5em", color: "#09f", "font-weight": "bold", cursor: "pointer"}} onClick={fitToHeight} >Fit To Height</span>
+                <span className="pseudo-link" onClick={fitToHeight} >Fit To Height</span>
             </div>
         </header>
     );
