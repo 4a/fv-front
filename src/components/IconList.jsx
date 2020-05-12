@@ -20,6 +20,8 @@ class _IconList_ extends Component {
             offline: "Offline",
             all: "Online + Offline"
         };
+
+        this.renderFilterSelect = this.renderFilterSelect.bind(this);
     }
 
     changeFilter(step) {
@@ -52,6 +54,20 @@ class _IconList_ extends Component {
         return activeChannels;
     }
 
+    renderFilterSelect() {
+        const indexes = {};
+        Object.keys(this.filters).forEach((filter, i) => indexes[filter] = i);
+        return (
+            <select className="filter-select" onChange={(e) => this.setState({currentFilter: indexes[e.target.value]})}>
+            {
+                Object.keys(this.filters).map((filter, i) => {
+                    return <option selected={i === this.state.currentFilter} value={filter}>{this.filters[filter]}</option>
+                })
+            }
+            </select>
+        );
+    }
+
     renderIcons() {
         const channels = this.props.channels;
         const activeChannels = this.getActiveChannels(this.props.views);
@@ -77,7 +93,8 @@ class _IconList_ extends Component {
                     <span className="arrow left" onClick={() => this.changeFilter(-1)}>
                         «
                     </span>
-                    <span className="label">{label}</span>
+                    {/* <span className="label">{label}</span> */}
+                    { this.renderFilterSelect() }
                     <span className="arrow right" onClick={() => this.changeFilter(1)}>
                         »
                     </span>

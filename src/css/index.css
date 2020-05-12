@@ -240,6 +240,30 @@ nav {
 .channel-header {
     color: #09f;
 }
+
+.channel-header .filter-select {
+    color: #09f;
+    font-weight: bold;
+    background: transparent;
+    border: 0;
+    text-align-last: center;
+    cursor: pointer;
+    appearance: none;
+    outline: none;
+    padding: 0 15px;
+}
+
+.channel-header .filter-select:hover {
+    color: #fff;
+}
+
+.channel-header .filter-select option {
+    color: #09f;
+    font-weight: bold;
+    background: #000;
+    cursor: pointer;
+}
+
 .channel-header .left.arrow,
 .channel-header .right.arrow {
     padding: 10px 40px;
@@ -250,6 +274,7 @@ nav {
 .channel-header .right.arrow:hover {
     color: #fff;
 }
+
 .channel .label {
     display: none;
     position: absolute;
