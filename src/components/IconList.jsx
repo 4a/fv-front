@@ -33,10 +33,11 @@ class _IconList_ extends Component {
     }
 
     sort(icons) {
+        icons = icons.sort((a, b) => a.props.data.groups.priority - b.props.data.groups.priority);
         switch (this.state.currentFilter) {
             case 1: // Online + Popular
             case 2: // Popular
-                return icons.sort((a, b) => b.props.data.popularity - a.props.data.popularity);
+                return icons.sort((a, b) => Object.keys(b.props.data.viewers).length - Object.keys(a.props.data.viewers).length);
             default:
                 return icons;
         }

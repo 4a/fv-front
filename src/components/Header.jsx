@@ -1,4 +1,5 @@
 import React from "react";
+import { fitToWidth, fitToHeight } from "../common/SetViewWidth";
 
 export const Header = () => {
     return (
@@ -19,6 +20,11 @@ export const Header = () => {
                     <img alt="Bets" src={`${process.env.REACT_APP_MEDIA_PATH}IS/BETS.png`} />
                 </a>
             </nav>
+            <div style={{padding: "1em"}}>
+                <span style={{padding: "0.5em", color: "#09f", "font-weight": "bold", cursor: "pointer"}} onClick={fitToWidth} >Fit To Width</span>
+                /
+                <span style={{padding: "0.5em", color: "#09f", "font-weight": "bold", cursor: "pointer"}} onClick={fitToHeight} >Fit To Height</span>
+            </div>
         </header>
     );
 };

@@ -8,6 +8,7 @@ import { ViewList } from "./components/ViewList";
 import { Chat } from "./components/Chat";
 import { UserInput } from "./components/UserInput";
 import { IconList } from "./components/IconList";
+import { fitToWidth, fitToHeight } from "./common/SetViewWidth";
 
 // const data = require("./channels.json");
 
@@ -43,6 +44,7 @@ class App extends Component {
 
     componentDidMount() {
         this.fetchChannelsLoop(30000);
+        fitToHeight();
     }
 
     componentDidUpdate() {
