@@ -18,7 +18,7 @@ export class Header extends Component {
         const viewport_height = document.querySelector('.stream-area').getBoundingClientRect().height;
         const viewport_width = document.querySelector('.stream-area').getBoundingClientRect().width;
         const view_aspect_ratio = 16 / 9;
-        const bottom_content_height = 161;
+        const bottom_content_height = 184;
         const chat_width = document.querySelector('.chat-area').getBoundingClientRect().width;
         const new_view_height = available_height - (viewport_y_offset + (viewport_height - (viewport_width / view_aspect_ratio)) + bottom_content_height);
         const new_view_width = Math.round(new_view_height * view_aspect_ratio);
@@ -30,19 +30,19 @@ export class Header extends Component {
         return (
             <header>
                 <a href="/">
-                    <img alt="Fightan Vidya" src={`${process.env.REACT_APP_MEDIA_PATH}IS/FVLogo.png`} />
+                    <img className="logo" alt="Fightan Vidya" src={`${process.env.REACT_APP_MEDIA_PATH}theme/${this.props.theme}/logo.png`} />
                 </a>
                 <nav className="menu">
                     <a href="/stream">
-                        <img alt="Stream" src={`${process.env.REACT_APP_MEDIA_PATH}IS/STREAM.png`} />
+                        <img alt="Stream" src={`${process.env.REACT_APP_MEDIA_PATH}theme/${this.props.theme}/stream.png`} />
                     </a>
-                    <img alt="/" src={`${process.env.REACT_APP_MEDIA_PATH}IS/DIV.png`} />
+                    <img alt="/" src={`${process.env.REACT_APP_MEDIA_PATH}theme/${this.props.theme}/divider.png`} />
                     <a href="/wiki">
-                        <img alt="Wiki" src={`${process.env.REACT_APP_MEDIA_PATH}IS/WIKI.png`} />
+                        <img alt="Wiki" src={`${process.env.REACT_APP_MEDIA_PATH}theme/${this.props.theme}/wiki.png`} />
                     </a>
-                    <img alt="/" src={`${process.env.REACT_APP_MEDIA_PATH}IS/DIV.png`} />
+                    <img alt="/" src={`${process.env.REACT_APP_MEDIA_PATH}theme/${this.props.theme}/divider.png`} />
                     <a href="/betmain">
-                        <img alt="Bets" src={`${process.env.REACT_APP_MEDIA_PATH}IS/BETS.png`} />
+                        <img alt="Bets" src={`${process.env.REACT_APP_MEDIA_PATH}theme/${this.props.theme}/bets.png`} />
                     </a>
                 </nav>
                 <div style={{padding: "1em"}}>

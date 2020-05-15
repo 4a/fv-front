@@ -9,7 +9,8 @@ import middleware from "./middleware";
 
 import App from "./App";
 import "./css/lib/material-icons.css";
-import "./css/index.css";
+import "./css/style.css";
+import "./css/theme/robotpuke/style.css";
 import * as serviceWorker from "./serviceWorker";
 
 serviceWorker.unregister();

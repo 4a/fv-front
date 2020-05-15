@@ -1,0 +1,21 @@
+#theme-wrapper.robotpuke {
+    background: #1a1a1a;
+}
+.robotpuke header {
+    font-size: 16px;
+}
+.robotpuke .channel-header .filter-select {
+    font-size: 16px;
+}
+.robotpuke .channel-header .left.arrow,
+.robotpuke .channel-header .right.arrow {
+    font-size: 2em;
+}
+.robotpuke .channel .label {
+    margin-top: 0.1em;
+    background-color: #1a1a1a;
+    opacity: 0.9;
+    border: 1px solid #1a1a1a;
+    border-radius: 5px;
+    font-size: 1.1em;
+}

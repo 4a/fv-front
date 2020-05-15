@@ -18,12 +18,14 @@ class App extends Component {
         this.state = {
             width: "1500px",
             channels: {},
+            theme: "robotpuke"
             // views: []
         };
         this.counter = 0;
 
         this.updateChannels = this.updateChannels.bind(this);
         this.setWidth = this.setWidth.bind(this);
+        this.toggleTheme = this.toggleTheme.bind(this);
     }
 
     fetchChannelsLoop(interval) {
@@ -46,7 +48,6 @@ class App extends Component {
 
     componentDidMount() {
         this.fetchChannelsLoop(30000);
-        // fitToHeight();
     }
 
     componentDidUpdate() {
@@ -57,11 +58,16 @@ class App extends Component {
         this.setState({width: newWidth});
     }
 
+    toggleTheme() { // TODO: support more than two themes
+        const theme = this.state.theme === "fv" ? "robotpuke" : "fv";
+        this.setState({theme})
+    }
+
     render() {
         return (
-            <div id="theme-wrapper">
+            <div id="theme-wrapper" className={this.state.theme}>
                 <main className="fv-main default">
-                    <Header setWidth={this.setWidth} />
+                    <Header theme={this.state.theme} setWidth={this.setWidth} />
                     <section className="grid" style={{ width: this.state.width }}>
                         <section className="mobile-header">
                             <img
@@ -72,7 +78,7 @@ class App extends Component {
                         </section>
                         <ViewList updateChannels={this.updateChannels} />
                         <div className="chat-area">
-                            <Chat />
+                            <Chat theme={this.state.theme} />
                         </div>
                     </section>
                     <div className="controllers">
@@ -81,7 +87,7 @@ class App extends Component {
                     </div>
                     <footer />
                 </main>
-                <Corners />
+                <Corners theme={this.state.theme} toggleTheme={this.toggleTheme} />
             </div>
         );
     }

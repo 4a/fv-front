@@ -24,6 +24,11 @@ body {
     font: 12px Arial, sans-serif;
     color: #fff;
 }
+#theme-toggler {
+    position: absolute;
+    top: 0; right: 0;
+    height: 50px; width: 50px;
+}
 #cw {
     position: absolute;
     z-index: 0;
@@ -50,6 +55,10 @@ body {
 header {
     text-align: center;
 }
+header .logo {
+    max-height: 95px;
+}
+
 nav {
     text-align: center;
 }
@@ -320,7 +329,7 @@ nav {
     margin-top: 0.25em;
     margin-left: 50%;
     transform: translateX(-50%);
-    padding: 0.1em;
+    padding: 0.2em;
     padding-bottom: 0.25em;
     min-width: 80px;
     cursor: pointer;

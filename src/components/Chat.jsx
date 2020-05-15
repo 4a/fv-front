@@ -4,7 +4,7 @@ export class Chat extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            iframe: `${process.env.REACT_APP_EMBED_PATH}fvchat.php`
+            // iframe: `${process.env.REACT_APP_EMBED_PATH}fvchat.php`
         };
     }
 
@@ -13,7 +13,7 @@ export class Chat extends React.Component {
             <div className="chat resize-lock">
                 <iframe
                     title="FV Chat Room"
-                    src={this.state.iframe}
+                    src={`${process.env.REACT_APP_EMBED_PATH}${this.props.theme}chat.php`}
                     style={{ height: "100%", width: "100%", border: 0 }}
                 />
             </div>
