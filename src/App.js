@@ -18,7 +18,7 @@ class App extends Component {
         this.state = {
             width: "1500px",
             channels: {},
-            theme: "robotpuke"
+            theme: "fv"
             // views: []
         };
         this.counter = 0;
