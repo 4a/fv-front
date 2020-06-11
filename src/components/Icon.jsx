@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { setChannel } from "../actions";
+import { setChannel, setActiveView } from "../actions";
 import { sourceMap } from "../common/SourceMap";
 import { pickColor } from "../common/PickColor";
 
 const mapDispatchToProps = dispatch => ({
-    setChannel: data => dispatch(setChannel(data))
+    setChannel: data => dispatch(setChannel(data)),
+    setActiveView: data => dispatch(setActiveView(data))
 });
 
 export class _Icon extends Component {
@@ -18,6 +19,9 @@ export class _Icon extends Component {
 
     handleClick(event) {
         event.preventDefault();
+        if (event.altKey) {
+            this.props.setActiveView("popout");
+        }
         this.props.setChannel(this.props.data);
     }
 
@@ -59,6 +63,7 @@ export class _Icon extends Component {
                 id={`FV_${data._id}`}
                 className={`channel ${status} ${active}`}
                 data-popularity={popularity}
+                data-category={data.groups.category}
                 onClick={this.handleClick}
             >
                 <img

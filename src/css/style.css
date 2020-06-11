@@ -358,7 +358,7 @@ nav {
     display: inline-block;
     filter: grayscale(100%);
 }
-.channels.other .channel {
+.channels.other .channel:not([data-category="misc"]) {
     display: none;
 }
 .channels.history .channel {

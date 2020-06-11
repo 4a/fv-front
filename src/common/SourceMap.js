@@ -1,6 +1,6 @@
 export const sourceMap = {
     twitch: {
-        getSrc: channel => `https://player.twitch.tv/?channel=${channel}`,
+        getSrc: channel => `https://player.twitch.tv/?channel=${channel}&parent=www.whitegirl.world`,
         getUrl: channel => `https://twitch.tv/${channel}`
     },
     youtube: {

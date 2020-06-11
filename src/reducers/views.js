@@ -5,6 +5,11 @@ const defaultState = {
             host: "any",
             embed_id: "",
             sessionStart: 0
+        },
+        popout: {
+            host: "any",
+            embed_id: "",
+            sessionStart: 0
         }
     }
 };
@@ -18,6 +23,9 @@ export const views = (prevState = defaultState, action) => {
             const i = state.active;
             state.list[i] = clone(action.payload);
             break;
+        case "SET_POPOUT":
+            state.list.popout = clone(action.payload);
+            break;
         case "SET_ACTIVE_VIEW":
             const index = action.payload;
             state.active = index;
@@ -28,7 +36,7 @@ export const views = (prevState = defaultState, action) => {
             break;
         case "REMOVE_VIEW":
             const length = Object.keys(state.list).length;
-            if (length > 1) delete state.list[action.payload];
+            if (length > 2) delete state.list[action.payload];
             else state.list = clone(defaultState.list);
             break;
         default:

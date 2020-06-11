@@ -5,6 +5,13 @@ export const setChannel = data => {
     };
 };
 
+export const setPopout = data => {
+    return {
+        type: "SET_POPOUT",
+        payload: data
+    };
+};
+
 export const setActiveView = index => {
     return {
         type: "SET_ACTIVE_VIEW",
